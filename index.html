@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konum Takibi</title>
+    <title>Live Location Simulator</title>
    
     <!-- Leaflet CSS  -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin="" />
@@ -24,7 +24,7 @@
 </head>
 
 <body>
-    <button id="toMarker">Comeback to Area</button>
+    <button id="backTo">Comeback to Area</button>
     <div id="map"></div>
 </body>
 </html>
@@ -45,11 +45,11 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-    map.on('click', function(e) {
-       alert(e.latlng.lat + ", " + e.latlng.lng);
-    }); 
+    // map.on('click', function(e) { 
+    //    alert(e.latlng.lat + ", " + e.latlng.lng);
+    // }); 
 
-    if(!navigator.geolocation){ //Geolocation Support Control
+    if(!navigator.geolocation){ //Geolocation Support Control (Not necessary as we don't use geolocation for now)
         console.log("No Browser Support"); 
     } else {
         //Number of Users (Markers), Line Length, Rotation Speed for SetInterval (Milliseconds), Distance Setting, Polygon (Area)
@@ -69,7 +69,7 @@ function walk(n, lineLength, intervalRate, dist, polygons){
     control = false; //Marker - Polygon Contains Controller
 
     for(i = 0; i < n; i++){
-        markers.push(L.marker([startLocation[0], startLocation[1]], {title: "Kullanıcı " + i}));
+        markers.push(L.marker([startLocation[0], startLocation[1]], {title: "User " + i}));
         markers[i].addTo(map);
         
         time.push([0, 0, 0]);
@@ -128,8 +128,8 @@ function walk(n, lineLength, intervalRate, dist, polygons){
             }
             if(control == true && isContain(polygons, i) == false){ //Going Out from Polygon
                 if(!(time[i][0] == 0 && time[i][1] == 0 && time[i][2] == 0)) //Momentary In-Out Protection
-                console.log("Kullanıcı " + i + ", " + time[i][2] + " Saat, " + time[i][1] + 
-                " Dakika, " + time[i][0] + " Saniye bölge içerisinde kaldı...");
+                console.log("User " + i + "'s area time:.. " + time[i][2] + " Hour, " + time[i][1] + 
+                " Minute, " + time[i][0] + " Second");
                 
                 time[i][0] = 0; time[i][1] = 0; time[i][2] = 0;
 
@@ -138,8 +138,8 @@ function walk(n, lineLength, intervalRate, dist, polygons){
 
             }
         
-            markers[i].bindPopup("<b>Cihaz Konumu</b><br/>Enlem(Latitude):"+coord[i][lineLength][0]+
-            "<br/> Boylam(Longitude):"+coord[i][lineLength][1]+"");
+            markers[i].bindPopup("<b>Device Location</b><br/>Latitude: "+coord[i][lineLength][0]+
+            "<br/> Longitude: "+coord[i][lineLength][1]+"");
 
         }
     }, intervalRate); 
@@ -197,9 +197,9 @@ function drawArea(){
 
 }
 
-    L.DomEvent.on(document.getElementById('toMarker'),'click',(e)=>{ //MARKER'A DÖNME
+    L.DomEvent.on(document.getElementById('backTo'),'click',(e)=>{ //Comeback to Area;
 	    pauseAutoMove = false;
-        map.setView([startLocation[0], startLocation[1]], 18);
+        map.setView([startLocation[0], startLocation[1]], 17);
     })
 
 </script>
