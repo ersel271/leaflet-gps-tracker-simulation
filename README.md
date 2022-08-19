@@ -9,7 +9,7 @@ A simple simulation of what a live location app looks like with Leaflet.js
 <li><b>Second Parameter (lineLength): </b>Length of the trace.</li>
 <li><b>Third Parameter (intervalRate): </b>Speed of location updates (millisecond).</li>
 <li><b>Fourth Parameter (dist): </b>Distance for each new location.</li>
-<li><b>Fifth Parameter (polygons): </b>Custom defined region (polygon).</li>
+<li><b>Fifth Parameter (polygons): </b>Custom defined area(polygon).</li>
 </ul>
 </br>
 All the markers added the array called <i>"markers"</i> and we also open other arrays called,
