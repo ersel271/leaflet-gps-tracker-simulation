@@ -53,29 +53,29 @@
         console.log("No Browser Support"); 
     } else {
         //Number of Users (Markers), Line Length, Rotation Speed for SetInterval (Milliseconds), Distance Setting, Polygon (Area)
-        walk(10, 10, 100, 8000, drawArea()); 
+        walk(10, 10, 100, 8000, drawArea());
     }
        
 function walk(n, lineLength, intervalRate, dist, polygons){
-    polyline = L.polyline([[0, 0], [0, 0]], {color: 'rgba(255, 0, 0, 0.6)'}), //Polyline for Outside the Polygon
-    innerPolyline = L.polyline([[0, 0], [0, 0]], {color: 'rgba(0, 0, 0, 0.6)'}), //Polyline for Inside the Polygon
+    var polyline = L.polyline([[0, 0], [0, 0]], {color: 'rgba(255, 0, 0, 0.6)'}), //Polyline for Outside the Polygon
+        innerPolyline = L.polyline([[0, 0], [0, 0]], {color: 'rgba(0, 0, 0, 0.6)'}), //Polyline for Inside the Polygon
 
-    markers = [], //Markers
-    coord = [[]], //Polyline Coordinates for Outside the Polygon
-    inCoord = [[[[]]]], //Polyline Coordinates for Inside the Polygon
-    inx = [], //Represent Indexes from "inCoord" | [i][0] Index1, Represent Polylines | [i][1] = Index2, Represent Polyline Points
-    time = [], //Timers | [i][0] Represent Second | [i][1] Represent Minute | [i][2] Represent Hour
+        markers = [], //Markers
+        coord = [[]], //Polyline Coordinates for Outside the Polygon
+        inCoord = [[[[]]]], //Polyline Coordinates for Inside the Polygon
+        inx = [], //Represent Indexes from "inCoord" | [i][0] Index1, Represent Polylines | [i][1] = Index2, Represent Polyline Points
+        time = [], //Timers | [i][0] Represent Second | [i][1] Represent Minute | [i][2] Represent Hour
 
-    control = false; //Marker - Polygon Contains Controller
+        control = false; //Marker - Polygon Contains Controller
 
     for(i = 0; i < n; i++){
         markers.push(L.marker([startLocation[0], startLocation[1]], {title: "User " + i}));
         markers[i].addTo(map);
         
-        time.push([0, 0, 0]);
-        inx.push([0, 0]);
         coord.push([[]]);
         inCoord.push([[[]]]);
+        inx.push([0, 0]);
+        time.push([0, 0, 0]);
     }coord.shift(); inCoord.shift();
 
     for(i = 0; i < n; i++){
@@ -86,7 +86,7 @@ function walk(n, lineLength, intervalRate, dist, polygons){
          
     setInterval(() => {
         for(i = 0; i < n; i++){
-            control = isContain(polygons, i)//polygon.contains(markers[i].getLatLng());
+            control = isContain(polygons, i);
         
             markers[i].addTo(map);
             polyline.addTo(map);
