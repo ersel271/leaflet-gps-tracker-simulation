@@ -32,6 +32,7 @@ We also have a function called <i>"drawArea"</i> and it help us for drawing a sp
 <li>Updating the code entirely using Leaflet objects (arrays holding locations etc).</li>
 <li>User and Admin Interface (with Bootstrap).</li>
 <li>Focus on selected users.</li>
+<li>Adding better clock system.</li>
 <li>An application that works with real locations from the database and real users.</li>
 <li>Preparing a new <i>README.md</i> describing the code and variables with details.</li>
 </ul>
