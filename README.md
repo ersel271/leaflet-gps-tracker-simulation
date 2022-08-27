@@ -1,4 +1,4 @@
-# leaflet-live-location-simulation
+# leaflet-gps-track-simulation
 A simple simulation of what a gps tracker app looks like with Leaflet.js
 
 <h2>How it Works?</h2>
