@@ -1,5 +1,5 @@
 # leaflet-live-location-simulation
-A simple simulation of what a live location app looks like with Leaflet.js
+A simple simulation of what a gps tracker app looks like with Leaflet.js
 
 <h2>How it Works?</h2>
 <p>We have a function that works with 5 parameters and named <i>"walk"</i>.</br>
