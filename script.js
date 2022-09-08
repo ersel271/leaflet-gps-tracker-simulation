@@ -60,7 +60,7 @@ function walk(n, lineLength, intervalRate, dist, polygons){ //Move Function
             if(typeof time[q][0] === "undefined") lastAreaTime = "";
             else lastAreaTime = time[q][3] + "h " + time[q][2] + "min " + time[q][1] + "sec";
 
-            markers[q].bindPopup("<b>"  +markers[q].options.title+"'s Device Location</b><br/>Latitude: " + outerCoord[q][lineLength][0] + "<br/> Longitude: " + outerCoord[q][lineLength][1] + "<br/> Last Visited Area:" + lastAreaNum + "<br/> Last Time Spent in Area: " + lastAreaTime);
+            markers[q].bindPopup("<b>" + markers[q].options.title+ "'s Device Location</b><br/>Latitude: " + outerCoord[q][lineLength][0] + "<br/> Longitude: " + outerCoord[q][lineLength][1] + "<br/> Last Visited Area:" + lastAreaNum + "<br/> Last Time Spent in Area: " + lastAreaTime);
 
             control = isContain(polygons, q);
         
