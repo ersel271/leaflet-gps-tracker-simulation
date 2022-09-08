@@ -1,130 +1,142 @@
-var startLocation = [41.06812073522929, 28.80712749218404], //41.05111255794263, 29.01896953582764
-    //Start | Latitude 41.051994533247054  | 41.0540724388416  | Inside: 41.04916303115243
-    //Start | Longitude 29.018325805664066 | 29.01448488235474 | Inside: 29.017210006713867
+var startLocation = [41.06812073522929, 28.80712749218404],
 
-    map = L.map('map').setView([startLocation[0], startLocation[1]], 17),
+    map = L.map('map', {fullscreenControl: true}).setView([startLocation[0], startLocation[1]], 16),
     osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+    }).addTo(map),
 
+    outerPolylines = [], //Polylines for Outside the Polygon
+    innerPolylines = [], //Polylines for Inside the Polygon
+    polygons = drawArea(), //Polygon Areas
+
+    markers = [], //Markers (Users)
+    outerCoord = [[]], //Polyline Coordinates for Outside the Polygon
+    innerCoord = [[[[]]]], //Polyline Coordinates for Inside the Polygon
+    inx = [], //Represent Indexes from "innerCoord" | [i][0] Index1, Represent Polylines | [i][1] Index2, Represent Polyline Points
+    time = [], //Timers | [i][0] Represent Second | [i][1] Represent Minute | [i][2] Represent Hour
+    entDate = [], //Last Date Markers Entered an Area
+    lastArea = [], //Last Visited Areas
+    control = false; //Marker - Polygon Contains Controller
+    
 // map.on('click', function(e) { 
-//     alert(e.latlng.lat + ", " + e.latlng.lng);
-// }); 
+//    alert(e.latlng.lat + ", " + e.latlng.lng);
+// });
 
 if(!navigator.geolocation){ //Geolocation Support Control (Not necessary as we don't use geolocation for now)
     console.log("No Browser Support"); 
 } else {
-    //Number of Users (Markers), Line Length, Rotation Speed for SetInterval (Milliseconds), Distance Setting, Polygon (Area)
-    walk(10, 10, 100, 8000, drawArea());
+    walk(10, 10, 100, 8000, polygons);
 }
-       
-function walk(n, lineLength, intervalRate, dist, polygons){
-    var polyline = L.polyline([[0, 0], [0, 0]], {color: 'rgba(255, 0, 0, 0.6)'}), //Polyline for Outside the Polygon
-        innerPolyline = L.polyline([[0, 0], [0, 0]], {color: 'rgba(0, 0, 0, 0.6)'}), //Polyline for Inside the Polygon
 
-        markers = [], //Markers
-        coord = [[]], //Polyline Coordinates for Outside the Polygon
-        inCoord = [[[[]]]], //Polyline Coordinates for Inside the Polygon
-        inx = [], //Represent Indexes from "inCoord" | [i][0] = Index1, Represent Polylines | [i][1] = Index2, Represent Polyline Points
-        time = [], //Timers | [i][0] Represent Second | [i][1] Represent Minute | [i][2] Represent Hour
-
-        control = false; //Marker - Polygon Contains Controller
-
-    for(i = 0; i < n; i++){
+function walk(n, lineLength, intervalRate, dist, polygons){ //Move Function
+    for (i = 0; i < n; i++) {
         markers.push(L.marker([startLocation[0], startLocation[1]], {title: "User " + i}));
         markers[i].addTo(map);
         
-        coord.push([[]]);
-        inCoord.push([[[]]]);
+        outerPolylines.push(L.polyline([[0, 0], [0, 0]], {color: 'rgba(255, 0, 0, 0.6)', className: 'outer-polyline'}));
+        innerPolylines.push(L.polyline([[0, 0], [0, 0]], {color: 'rgba(0, 0, 0, 0.6)', className: 'inner-polyline'}));
+        outerCoord.push([[]]);
+        innerCoord.push([[[]]]);
         inx.push([0, 0]);
-        time.push([0, 0, 0]);
-    }coord.shift(); inCoord.shift();
+        time.push(-1);
+        entDate.push(-1);
+        lastArea.push(-1);
 
-    for(i = 0; i < n; i++){
-        coord[i].shift();
+    } outerCoord.shift(); innerCoord.shift();
+
+    for (i = 0; i < n; i++) {
+        outerCoord[i].shift();
         for(j = 0; j < (lineLength + 1); j++)
-            coord[i].push([startLocation[0], startLocation[1]]);
-    }
-         
+            outerCoord[i].push([startLocation[0], startLocation[1]]);
+    } 
+
     setInterval(() => {
-        for(i = 0; i < n; i++){
-            control = isContain(polygons, i)[0];
+        for (q = 0; q < n; q++) {
+            var lastAreaNum = lastArea[q],
+                lastAreaTime = "";
+                
+            if(lastAreaNum === -1 ) lastAreaNum = "";
+
+            if(typeof time[q][0] === "undefined") lastAreaTime = "";
+            else lastAreaTime = time[q][3] + "h " + time[q][2] + "min " + time[q][1] + "sec";
+
+            markers[q].bindPopup("<b>"  +markers[q].options.title+"'s Device Location</b><br/>Latitude: " + outerCoord[q][lineLength][0] + "<br/> Longitude: " + outerCoord[q][lineLength][1] + "<br/> Last Visited Area:" + lastAreaNum + "<br/> Last Time Spent in Area: " + lastAreaTime);
+
+            control = isContain(polygons, q);
         
-            markers[i].addTo(map);
-            polyline.addTo(map);
-            innerPolyline.addTo(map);
+            markers[q].addTo(map);
+            for (i = 0; i < n; i++) {
+                outerPolylines[i].addTo(map);
+                innerPolylines[i].addTo(map);
+            }
         
-            for(j = 0; j < lineLength; j++)
-                for(k = 0; k < 2; k++)
-                    coord[i][j][k] = coord[i][j + 1][k];
+            for (i = 0; i < lineLength; i++)
+                for(j = 0; j < 2; j++)
+                    outerCoord[q][i][j] = outerCoord[q][i + 1][j];
 
             var latV = (Math.random()) / dist,
                 lonV = (Math.random()) / dist,
             direction = Math.floor(Math.random() * 20);
-            if(direction > 7) direction = Math.floor(Math.random() * 4); //Reduce the Chance of Going Straight
-            switch(direction){
-                case 0: coord[i][lineLength][0] += latV; coord[i][lineLength][1] += lonV; break; //Northeast
-                case 1: coord[i][lineLength][0] -= latV; coord[i][lineLength][1] -= lonV; break; //Southwest
-                case 2: coord[i][lineLength][0] += latV; coord[i][lineLength][1] -= lonV; break; //Northwest
-                case 3: coord[i][lineLength][0] -= latV; coord[i][lineLength][1] += lonV; break; //Southeast
-                case 4: coord[i][lineLength][0] += latV; break; //North
-                case 5: coord[i][lineLength][0] -= latV; break; //South
-                case 6: coord[i][lineLength][1] += lonV; break; //East
-                case 7: coord[i][lineLength][1] -= lonV; break; //West
+            if (direction > 7) direction = Math.floor(Math.random() * 4); //Reduce the Chance of Going Straight
+            switch (direction) {
+                case 0: outerCoord[q][lineLength][0] += latV; outerCoord[q][lineLength][1] += lonV; break; //Northeast
+                case 1: outerCoord[q][lineLength][0] -= latV; outerCoord[q][lineLength][1] -= lonV; break; //Southwest
+                case 2: outerCoord[q][lineLength][0] += latV; outerCoord[q][lineLength][1] -= lonV; break; //Northwest
+                case 3: outerCoord[q][lineLength][0] -= latV; outerCoord[q][lineLength][1] += lonV; break; //Southeast
+                case 4: outerCoord[q][lineLength][0] += latV; break; //North
+                case 5: outerCoord[q][lineLength][0] -= latV; break; //South
+                case 6: outerCoord[q][lineLength][1] += lonV; break; //East
+                case 7: outerCoord[q][lineLength][1] -= lonV; break; //West
             }
-        
-            if(isContain(polygons, i)[0]){ //Permanent Polyline
-                inCoord[i][inx[i][0]][inx[i][1]] = ([coord[i][lineLength][0], coord[i][lineLength][1]]);
-                inx[i][1]++;
+    
+            if (isContain(polygons, q) !== -1) { //Permanent Polyline
+                innerCoord[q][inx[q][0]][inx[q][1]] = ([outerCoord[q][lineLength][0], outerCoord[q][lineLength][1]]);
+                inx[q][1]++;
 
-                markers[i].setLatLng(inCoord[i][inx[i][0]][inCoord[i][inx[i][0]].length - 1]);
-                innerPolyline.setLatLngs(inCoord);
-            
+                markers[q].setLatLng(innerCoord[q][inx[q][0]][innerCoord[q][inx[q][0]].length - 1]);
+                innerPolylines[q].setLatLngs(innerCoord[q]);
+                outerPolylines[q].setLatLngs(0, 0);
+
             } else { //Temporary Polyline
-                markers[i].setLatLng(coord[i][lineLength]);
-                polyline.setLatLngs(coord);
+                markers[q].setLatLng(outerCoord[q][lineLength]);
+                outerPolylines[q].setLatLngs(outerCoord[q]);
 
             }
-        
-            if(control == false && isContain(polygons, i)[0] == true){ //Entering the Polygon
-                //We Will Use Here When the User Interface is Ready
-            }
-            if(control == true && isContain(polygons, i)[0] == false){ //Going Out from Polygon
-                if(!(time[i][0] == 0 && time[i][1] == 0 && time[i][2] == 0)) //Momentary In-Out Protection
-                console.log("User " + i + "'s area time:.. " + time[i][2] + " Hour, " + time[i][1] + 
-                " Minute, " + time[i][0] + " Second");
+
+            if (control === -1 && isContain(polygons, q) !== -1) { //Entering the Polygon
+                entDate[q] = new Date();
+                lastArea[q] = isContain(polygons, q);
+
+            } if (control !== -1 && isContain(polygons, q) === -1) { //Going Out from Polygon
+                time[q] = getAreaTime(new Date().getTime() - entDate[q].getTime(), [1000, 60, 60]);
+                lastAreaTime = time[q][3] + "h " + time[q][2] + "min " + time[q][1] + "sec"; 
                 
-                time[i][0] = 0; time[i][1] = 0; time[i][2] = 0;
+                innerCoord[q].push([[]]);
+                inx[q][0]++; inx[q][1] = 0;
 
-                inCoord[i].push([[]]);
-                inx[i][0]++; inx[i][1] = 0;
             }
-        
-            markers[i].bindPopup("<b>" + markers[i].options.title + "'s Location</b><br/>Latitude: "+ coord[i][lineLength][0] +
-            "<br/> Longitude: " + coord[i][lineLength][1] + "");
-
         }
-    }, intervalRate); 
+    }, intervalRate);
+}
 
-    setInterval(() => { //Clock
-        for(i = 0; i < n; i++){
-            if(isContain(polygons, i)[0]){
-                time[i][0]++;
-                if(time[i][0] == 59) { time[i][0] = 0; time[i][1] +=1; }
-                if(time[i][1] == 59) { time[i][1] = 0; time[i][2] +=1; }
-            }            
-        }
-    }, 1000);
+function isContain(polygons, j) {
+    for(i = 0; i < polygons.length; i++)
+            if (polygons[i].contains(markers[j].getLatLng())) return i;
 
-    function isContain(polygons, i){
-        for(j = 0; j < polygons.length; j++)
-                if (polygons[j].contains(markers[i].getLatLng())) return [true, j];
+    return -1;
+}
 
-        return [false, -1];
+function getAreaTime(baseValue, timeFractions) { //Clock
+    var data = [baseValue];
+    for (i = 0; i < timeFractions.length; i++) {
+        data.push(parseInt(data[i] / timeFractions[i]));
+        data[i] = data[i] % timeFractions[i]; //timeFractions [1000, 60, 60] | Inx0 = Millisecond, 1 = Second, 2 = Minute, 3 = Hour
     }
-}  
 
-function drawArea(){
+    return data;
+}
+
+function drawArea() { //Area
     var polygonLatlngs = [[[41.0697429223744, 28.808513195580787], //Coordinates for Polygons
                            [41.0697429223744, 28.80996130994058],
                            [41.067885138094944, 28.80996130994058],
@@ -143,17 +155,11 @@ function drawArea(){
                            [41.068852289267156, 28.805596395803942],
                            [41.07220323574246, 28.803598729542536]]],
     polygons = [];
-    for(i = 0; i < polygonLatlngs.length; i++){
-        var polygon = new L.polygon(polygonLatlngs[i], {color: "rgb(0, 200, 0)", title: "Area " + i});
+    for (i = 0; i < polygonLatlngs.length; i++) {
+        var polygon = new L.polygon(polygonLatlngs[i], {color: 'rgb(0, 200, 0)', title: 'Area ' + i, className: 'area-polygon'});
         polygons.push(polygon);
         polygons[i].addTo(map);
     }
 
     return polygons;
-
 }
-
-L.DomEvent.on(document.getElementById('backTo'),'click',(e)=>{ //Comeback to Area;
-	pauseAutoMove = false;
-    map.setView([startLocation[0], startLocation[1]], 17);
-})
