@@ -25,7 +25,7 @@ var startLocation = [41.06812073522929, 28.80712749218404],
 if(!navigator.geolocation){ //Geolocation Support Control (Not necessary as we don't use geolocation for now)
     console.log("No Browser Support"); 
 } else {
-    walk(10, 10, 100, 8000, polygons);
+    walk(10, 20, 200, 8000, polygons);
 }
 
 function walk(n, lineLength, intervalRate, dist, polygons){ //Move Function
