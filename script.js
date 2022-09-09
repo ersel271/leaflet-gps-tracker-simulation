@@ -22,11 +22,7 @@ var startLocation = [41.06812073522929, 28.80712749218404],
 //    alert(e.latlng.lat + ", " + e.latlng.lng);
 // });
 
-if(!navigator.geolocation){ //Geolocation Support Control (Not necessary as we don't use geolocation for now)
-    console.log("No Browser Support"); 
-} else {
-    walk(10, 20, 200, 8000, polygons);
-}
+walk(10, 20, 200, 8000, polygons);
 
 function walk(n, lineLength, intervalRate, dist, polygons){ //Move Function
     for (i = 0; i < n; i++) {
@@ -68,20 +64,7 @@ function walk(n, lineLength, intervalRate, dist, polygons){ //Move Function
                 for(j = 0; j < 2; j++)
                     outerCoord[q][i][j] = outerCoord[q][i + 1][j];
 
-            var latV = (Math.random()) / dist,
-                lonV = (Math.random()) / dist,
-            direction = Math.floor(Math.random() * 20);
-            if (direction > 7) direction = Math.floor(Math.random() * 4); //Reduce the Chance of Going Straight
-            switch (direction) {
-                case 0: outerCoord[q][lineLength][0] += latV; outerCoord[q][lineLength][1] += lonV; break; //Northeast
-                case 1: outerCoord[q][lineLength][0] -= latV; outerCoord[q][lineLength][1] -= lonV; break; //Southwest
-                case 2: outerCoord[q][lineLength][0] += latV; outerCoord[q][lineLength][1] -= lonV; break; //Northwest
-                case 3: outerCoord[q][lineLength][0] -= latV; outerCoord[q][lineLength][1] += lonV; break; //Southeast
-                case 4: outerCoord[q][lineLength][0] += latV; break; //North
-                case 5: outerCoord[q][lineLength][0] -= latV; break; //South
-                case 6: outerCoord[q][lineLength][1] += lonV; break; //East
-                case 7: outerCoord[q][lineLength][1] -= lonV; break; //West
-            }
+            newLocation(dist, lineLength, q);
     
             if (isContain(polygons, q) !== -1) { //Permanent Polyline
                 innerCoord[q][inx[q][0]][inx[q][1]] = ([outerCoord[q][lineLength][0], outerCoord[q][lineLength][1]]);
@@ -113,7 +96,25 @@ function walk(n, lineLength, intervalRate, dist, polygons){ //Move Function
     }, intervalRate);
 }
 
-function isContain(polygons, j) {
+function(dist, lineLength, q) { //Giving New Location to Marker
+     var latV = (Math.random()) / dist,
+        lonV = (Math.random()) / dist,
+        direction = Math.floor(Math.random() * 20);
+    if (direction > 7) direction = Math.floor(Math.random() * 4); //Reduce the Chance of Going Straight
+    
+    switch (direction) {
+        case 0: outerCoord[q][lineLength][0] += latV; outerCoord[q][lineLength][1] += lonV; break; //Northeast
+        case 1: outerCoord[q][lineLength][0] -= latV; outerCoord[q][lineLength][1] -= lonV; break; //Southwest
+        case 2: outerCoord[q][lineLength][0] += latV; outerCoord[q][lineLength][1] -= lonV; break; //Northwest
+        case 3: outerCoord[q][lineLength][0] -= latV; outerCoord[q][lineLength][1] += lonV; break; //Southeast
+        case 4: outerCoord[q][lineLength][0] += latV; break; //North
+        case 5: outerCoord[q][lineLength][0] -= latV; break; //South
+        case 6: outerCoord[q][lineLength][1] += lonV; break; //East
+        case 7: outerCoord[q][lineLength][1] -= lonV; break; //West
+    }
+}
+
+function isContain(polygons, j) { //Control If the Area Contains Marker
     for(i = 0; i < polygons.length; i++)
             if (polygons[i].contains(markers[j].getLatLng())) return i;
 
@@ -124,13 +125,13 @@ function getAreaTime(baseValue, timeFractions) { //Clock
     var data = [baseValue];
     for (i = 0; i < timeFractions.length; i++) {
         data.push(parseInt(data[i] / timeFractions[i]));
-        data[i] = data[i] % timeFractions[i]; //timeFractions [1000, 60, 60] | Inx0 = Millisecond, 1 = Second, 2 = Minute, 3 = Hour
+        data[i] = data[i] % timeFractions[i];
     }
 
     return data;
 }
 
-function drawArea() { //Area
+function drawArea() { //Define Areas
     var polygonLatlngs = [[[41.0697429223744, 28.808513195580787], //Coordinates for Polygons
                            [41.0697429223744, 28.80996130994058],
                            [41.067885138094944, 28.80996130994058],
