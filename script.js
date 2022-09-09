@@ -13,7 +13,7 @@ var startLocation = [41.06812073522929, 28.80712749218404],
     outerCoord = [[]], //Polyline Coordinates for Outside the Polygon
     innerCoord = [[[[]]]], //Polyline Coordinates for Inside the Polygon
     inx = [], //Represent Indexes from "innerCoord" | [i][0] Index1, Represent Polylines | [i][1] Index2, Represent Polyline Points
-    time = [], //Timers | [i][0] Represent Second | [i][1] Represent Minute | [i][2] Represent Hour
+    time = [], //Timers [i][0] Represent Millisecond | [i][1] Represent Second | [i][2] Represent Minute | [i][3] Represent Hour
     entDate = [], //Last Date Markers Entered an Area
     lastArea = [], //Last Visited Areas
     control = false; //Marker - Polygon Contains Controller
@@ -63,12 +63,6 @@ function walk(n, lineLength, intervalRate, dist, polygons){ //Move Function
             markers[q].bindPopup("<b>" + markers[q].options.title+ "'s Device Location</b><br/>Latitude: " + outerCoord[q][lineLength][0] + "<br/> Longitude: " + outerCoord[q][lineLength][1] + "<br/> Last Visited Area:" + lastAreaNum + "<br/> Last Time Spent in Area: " + lastAreaTime);
 
             control = isContain(polygons, q);
-        
-            markers[q].addTo(map);
-            for (i = 0; i < n; i++) {
-                outerPolylines[i].addTo(map);
-                innerPolylines[i].addTo(map);
-            }
         
             for (i = 0; i < lineLength; i++)
                 for(j = 0; j < 2; j++)
