@@ -33,8 +33,8 @@ function walk(n, lineLength, intervalRate, dist, polygons){ //Move Function
         markers.push(L.marker([startLocation[0], startLocation[1]], {title: "User " + i}));
         markers[i].addTo(map);
         
-        outerPolylines.push(L.polyline([[0, 0], [0, 0]], {color: 'rgba(255, 0, 0, 0.6)', className: 'outer-polyline'}));
-        innerPolylines.push(L.polyline([[0, 0], [0, 0]], {color: 'rgba(0, 0, 0, 0.6)', className: 'inner-polyline'}));
+        outerPolylines.push(L.polyline([[0, 0], [0, 0]], {color: 'rgba(255, 0, 0, 0.6)', className: 'outer-polyline'}).addTo(map);
+        innerPolylines.push(L.polyline([[0, 0], [0, 0]], {color: 'rgba(0, 0, 0, 0.6)', className: 'inner-polyline'}).addTo(map);
         outerCoord.push([[]]);
         innerCoord.push([[[]]]);
         inx.push([0, 0]);
