@@ -24,13 +24,13 @@ var startLocation = [41.06812073522929, 28.80712749218404],
 
 walk(10, 20, 200, 8000, polygons);
 
-function walk(n, lineLength, intervalRate, dist, polygons){ //Move Function
+function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
     for (i = 0; i < n; i++) {
         markers.push(L.marker([startLocation[0], startLocation[1]], {title: "User " + i}));
         markers[i].addTo(map);
         
-        outerPolylines.push(L.polyline([[0, 0], [0, 0]], {color: 'rgba(255, 0, 0, 0.6)', className: 'outer-polyline'}).addTo(map);
-        innerPolylines.push(L.polyline([[0, 0], [0, 0]], {color: 'rgba(0, 0, 0, 0.6)', className: 'inner-polyline'}).addTo(map);
+        outerPolylines.push(L.polyline([[0, 0], [0, 0]], {color: 'rgba(255, 0, 0, 0.6)', className: 'outer-polyline'}).addTo(map));
+        innerPolylines.push(L.polyline([[0, 0], [0, 0]], {color: 'rgba(0, 0, 0, 0.6)', className: 'inner-polyline'}).addTo(map));
         outerCoord.push([[]]);
         innerCoord.push([[[]]]);
         inx.push([0, 0]);
@@ -96,13 +96,13 @@ function walk(n, lineLength, intervalRate, dist, polygons){ //Move Function
     }, intervalRate);
 }
 
-function(dist, lineLength, q) { //Giving New Location to Marker
+function newLocation(dist, lineLength, q) { //Giving New Location to Marker
      var latV = (Math.random()) / dist,
         lonV = (Math.random()) / dist,
         direction = Math.floor(Math.random() * 20);
     if (direction > 7) direction = Math.floor(Math.random() * 4); //Reduce the Chance of Going Straight
     
-    switch (direction) {
+    switch (direction) { //Set Direction
         case 0: outerCoord[q][lineLength][0] += latV; outerCoord[q][lineLength][1] += lonV; break; //Northeast
         case 1: outerCoord[q][lineLength][0] -= latV; outerCoord[q][lineLength][1] -= lonV; break; //Southwest
         case 2: outerCoord[q][lineLength][0] += latV; outerCoord[q][lineLength][1] -= lonV; break; //Northwest
