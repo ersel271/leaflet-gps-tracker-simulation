@@ -1,38 +1,67 @@
-# leaflet-gps-track-simulation
-A simple simulation of what a gps tracker app looks like with Leaflet.js
+# leaflet-gps-tracker-simulation
+A simple simulation of what a gps tracker app looks like with [Leaflet.js.](https://github.com/Leaflet/Leaflet "Leaflet.js")
 
-<h2>How it Works?</h2>
-<p>We have a function that works with 5 parameters and named <i>"walk"</i>.</br>
+## :fa-heart-o: Variables
+#### Leaflet Object Variables
+- **`markers = []`**  &rarr; Holds users markers as a HTML Collection.
+- **`outerPolylines = []`**  &rarr; Holds polylines for outside the polygon as a HTML collection.
+- **`innerPolylines = []`**  &rarr; Holds polylines for outside the polygon as a HTML collection.
+- **`polygons = []`**  &rarr; Holds defined areas as a HTML collection.
 
-<ul> 
-<li><b>First Parameter (n): </b>User count (Marker count).</li>
-<li><b>Second Parameter (lineLength): </b>Length of the trace.</li>
-<li><b>Third Parameter (intervalRate): </b>Speed of location updates (millisecond).</li>
-<li><b>Fourth Parameter (dist): </b>Distance for each new location.</li>
-<li><b>Fifth Parameter (polygons): </b>Custom defined area(polygon).</li>
-</ul>
-</br>
-All the markers added the array called <i>"markers"</i> and we also open other arrays called,
-<ul> 
-<li><b>coord: </b>Holds the coordinates of the temporary traces left by the movement.</li>
-<li><b>inCoord: </b>Holds the coordinates of the permanent (inside the polygon) traces left by the movement.</li>
-<li><b>inx: </b>Keeps the indexes in the define algorithm used for the <i>"inCoord"</i>.</li>
-<li><b>time </b>Keeps the time that each marker stays in the area (inside the polygon).</li>
-</ul>
-</br>
-We also have a function called <i>"drawArea"</i> and it help us for drawing a special area with polygons. The trace left by the markers in this area becomes permanent.
-</br>
-<ul><li><b>polygonLatlngs: </b>We write the coordinates of the area we have determined into this array. Each area must be an element of this array. In other words, each index of the array contains other arrays containing the coordinates of that area. It returns the <i>"polygons"</i> array.</li></ul>
-</br>
+#### Process Variables
+- **`outerCoord = [[]]`**  &rarr; Holds the coordinates to use for **outerPolylines**. It has an index for each user, and these indexes contain arrays in which the coordinates are kept.
+- **`innerCoord = [[[[]]]]`**  &rarr; Holds the coordinates to use for **innerPolylines**. Each index is a separate array and each of these arrays contains the coordinates of its users. When exiting an area, a new array is added to the required index inside the** innerCoord** for the next entry. In the next entry, the coordinates taken inside the area are kept in this array.
+- **`inx = []`**  &rarr; Its used to determine of new arrays to be added to the **innerCoord**.  It has an index for each user. Each index contains a two-element array. **[q][0]** represents polylines. **[q][1]** represents polyline points. **[q][1]** is updated for every move within the area. **[q][1]** is reset and **[q][0]** is incremented by one each time you exit the area.
+- **`entDate = []`**  &rarr; Holds the last date entered in the area. It has an index for each user.
+- **`time = []`**  &rarr; Holds the last time spent in the area. It has an index for each user. Each index contains a four-element array. **[q][0]** represents millisecond, **[q][1]** represents second, **[q][2]** epresents minute, **[q][3]** represent hour.
+- **`lastArea = []`** &rarr; Last visited area. It has an index for each user.
 
-<b>Try this: </b></br>
-`walk(10, 20, 250, 10000, drawArea());`
-<h2>Future Updates</h2>
-<ul>
-<li>Updating the code entirely using Leaflet objects (arrays holding locations etc).</li>
-<li>User and Admin Interface (with Bootstrap).</li>
-<li>Focus on selected users.</li>
-<li>Adding better clock system.</li>
-<li>An application that works with real locations from the database and real users.</li>
-<li>Preparing a new <i>README.md</i> describing the code and variables with details.</li>
-</ul>
+#### Other
+- **`startLocation`**  &rarr; Variable that holds the starting position.
+- **`control`**  &rarr; Control variable required to capture the moment of entry and exit into the area.
+
+## :fa-heart-o: Functions
+- **`walk(n, lineLength, intervalRate, dist, polygons)`** &rarr; Main function with which operations are performed. It takes five parameters:
+
+1. **n** &rarr; Number of users.
+2. **lineLength** &rarr; Number of points to use to draw **outerPolylines**.
+3. **intervalRate** &rarr; Speed of *setInterval* for operations.
+4. **dist** &rarr; Distance from which the new location will be selected. Larger the value, smaller the distance between the new location and the old location.
+5. **polygons** &rarr; Defined areas.
+
+**return:** No.
+
+------------
+- **`newLocation(dist, lineLength, q)`** &rarr; Function that selects the direction and new location of the users. It takes three parameters:
+
+1. **dist** &rarr; Same as other.
+2. **lineLength** &rarr; Same as other.
+3. **q** &rarr; Number of users. 
+
+**return:** No.
+
+------------
+- **`isContain(polygons, j)`** &rarr; Function that checks if the user is inside an area or not. It takes two parameters:
+
+1. **polygons** &rarr; Defined areas.
+2. **j** &rarr; Number of users.
+
+**return:** Yes. If user is inside an area, it returns the index of that area. Otherwise it returns -1.
+
+------------
+- **`getAreaTime(baseValue, timeFractions)`** &rarr; Function that converts the millisecond difference of the entry and exit dates of the area to other time fractions. It takes two parameters:
+
+1. **baseValue** &rarr; Raw millisecond data.
+2. **timeFractions** &rarr;  Time fractions. For example **[1000, 60, 60]**. **1000**, converts milliseconds to seconds, **60**, converts seconds to minutes, **2nd 60**, converts minutes to hours. If a **24** is added to the end, the hours are converted to days.
+
+**return:** Yes. Returns the edited duration data. **Index 0** represents milliseconds, **Index 1** represents seconds, **Index 2** represents minutes,  **Index 3** represents hours etc...
+
+------------
+- **`drawArea()`** &rarr; Function that draw areas. Coordinates of the areas are manually entered into the **polygonLatngs** array inside the function. Each index of this array must contain an array containing the coordinates of the area. It takes no parameters.
+
+**return:** Yes. Returns an array containing the Leaflet objects of the areas.
+
+## :fa-heart-o: References
+- [**Leaflet.js:**](https://github.com/Leaflet/Leaflet "**Leaflet.js:**") Javascript library for mobile-friendly interactive maps.
+- [**Leaflet.PointInPolygon:**](https://github.com/hayeswise/Leaflet.PointInPolygon "**Leaflet.PointInPolygon**") Leaflet plugin/extension that provides point-in-polygon functions based on Dan Sunday's C++ winding number implementation.
+- [**Leaflet.fullscreen:**](https://github.com/Leaflet/Leaflet.fullscreen "**Leaflet.fullscreen**") A fullscreen control for Leaflet.
