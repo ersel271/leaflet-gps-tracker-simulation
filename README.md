@@ -3,10 +3,10 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js.](http
 
 ## :star: Variables
 #### Leaflet Object Variables
-- **`markers = []`**  &rarr; Holds users markers as a HTML Collection.
+- **`markers = []`**  &rarr; Holds user markers as a HTML collection.
 - **`outerPolylines = []`**  &rarr; Holds polylines for outside the polygon as a HTML collection.
 - **`innerPolylines = []`**  &rarr; Holds polylines for outside the polygon as a HTML collection.
-- **`polygons = []`**  &rarr; Holds defined areas as a HTML collection.
+- **`polygons = []`**  &rarr; Holds areas as a HTML collection.
 
 #### Process Variables
 - **`outerCoord = [[]]`**  &rarr; Holds the coordinates to use for **outerPolylines**. It has an index for each user, and these indexes contain arrays in which the coordinates are kept.
