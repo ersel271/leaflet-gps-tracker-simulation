@@ -1,7 +1,7 @@
 # leaflet-gps-tracker-simulation
 A simple simulation of what a gps tracker app looks like with [Leaflet.js.](https://github.com/Leaflet/Leaflet "Leaflet.js")
 
-## :fa-heart-o: Variables
+## :star: Variables
 #### Leaflet Object Variables
 - **`markers = []`**  &rarr; Holds users markers as a HTML Collection.
 - **`outerPolylines = []`**  &rarr; Holds polylines for outside the polygon as a HTML collection.
@@ -20,7 +20,7 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js.](http
 - **`startLocation`**  &rarr; Variable that holds the starting position.
 - **`control`**  &rarr; Control variable required to capture the moment of entry and exit into the area.
 
-## :fa-heart-o: Functions
+## :star: Functions
 - **`walk(n, lineLength, intervalRate, dist, polygons)`** &rarr; Main function with which operations are performed. It takes five parameters:
 
 1. **n** &rarr; Number of users.
@@ -61,7 +61,7 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js.](http
 
 **return:** Yes. Returns an array containing the Leaflet objects of the areas.
 
-## :fa-heart-o: References
+## :star: References
 - [**Leaflet.js:**](https://github.com/Leaflet/Leaflet "**Leaflet.js:**") Javascript library for mobile-friendly interactive maps.
 - [**Leaflet.PointInPolygon:**](https://github.com/hayeswise/Leaflet.PointInPolygon "**Leaflet.PointInPolygon**") Leaflet plugin/extension that provides point-in-polygon functions based on Dan Sunday's C++ winding number implementation.
 - [**Leaflet.fullscreen:**](https://github.com/Leaflet/Leaflet.fullscreen "**Leaflet.fullscreen**") A fullscreen control for Leaflet.
