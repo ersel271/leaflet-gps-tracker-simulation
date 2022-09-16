@@ -16,7 +16,7 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js.](http
 - **`time = []`**  &rarr; Holds the last time spent in the area. It has an index for each user. Each index contains a four-element array. **[q][0]** represents millisecond, **[q][1]** represents second, **[q][2]** epresents minute, **[q][3]** represent hour.
 - **`lastArea = []`** &rarr; Last visited area. It has an index for each user.
 
-#### Other
+#### Other Variables
 - **`startLocation`**  &rarr; Variable that holds the starting position.
 - **`control`**  &rarr; Control variable required to capture the moment of entry and exit into the area.
 
