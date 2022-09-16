@@ -5,17 +5,18 @@ var startLocation = [41.06812073522929, 28.80712749218404],
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map),
 
+    markers = [], //Markers (Users)
     outerPolylines = [], //Polylines for Outside the Polygon
     innerPolylines = [], //Polylines for Inside the Polygon
     polygons = drawArea(), //Polygon Areas
 
-    markers = [], //Markers (Users)
     outerCoord = [[]], //Polyline Coordinates for Outside the Polygon
     innerCoord = [[[[]]]], //Polyline Coordinates for Inside the Polygon
     inx = [], //Represent Indexes from "innerCoord" | [i][0] Index1, Represent Polylines | [i][1] Index2, Represent Polyline Points
-    time = [], //Timers [i][0] Represent Millisecond | [i][1] Represent Second | [i][2] Represent Minute | [i][3] Represent Hour
     entDate = [], //Last Date Markers Entered an Area
+    time = [], //Timers [i][0] Represent Millisecond | [i][1] Represent Second | [i][2] Represent Minute | [i][3] Represent Hour
     lastArea = [], //Last Visited Areas
+    
     control = false; //Marker - Polygon Contains Controller
     
 // map.on('click', function(e) { 
