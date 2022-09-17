@@ -36,7 +36,7 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js.](http
 
 1. **dist** &rarr; Same as other.
 2. **lineLength** &rarr; Same as other.
-3. **q** &rarr; Number of users. 
+3. **q** &rarr; User index. 
 
 **return:** No.
 
@@ -44,7 +44,7 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js.](http
 - **`isContain(polygons, j)`** &rarr; Function that checks if the user is inside an area or not. It takes two parameters:
 
 1. **polygons** &rarr; Defined areas.
-2. **j** &rarr; Number of users.
+2. **j** &rarr; User index.
 
 **return:** Yes. If user is inside an area, it returns the index of that area. Otherwise it returns -1.
 
