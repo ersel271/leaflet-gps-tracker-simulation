@@ -1,4 +1,4 @@
-var startLocation = [41.06812073522929, 28.80712749218404],
+var startLocation = [40.98325785367988, 29.052819013595585],
 
     map = L.map('map', {fullscreenControl: true}).setView([startLocation[0], startLocation[1]], 16),
     osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -23,7 +23,7 @@ var startLocation = [41.06812073522929, 28.80712749218404],
 //    alert(e.latlng.lat + ", " + e.latlng.lng);
 // });
 
-walk(10, 20, 200, 8000, polygons);
+walk(10, 20, 100, 8000, polygons);
 
 function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
     for (i = 0; i < n; i++) {
@@ -49,15 +49,15 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
 
     setInterval(() => {
         for (q = 0; q < n; q++) {
-            var lastAreaNum = lastArea[q],
+            var lastAreaNum = "Area " + lastArea[q],
                 lastAreaTime = "";
                 
-            if(lastAreaNum === -1 ) lastAreaNum = "";
+            if(lastAreaNum === "Area -1" ) lastAreaNum = "Nowhere";
 
-            if(typeof time[q][0] === "undefined") lastAreaTime = "";
+            if(typeof time[q][0] === "undefined") lastAreaTime = "No Data";
             else lastAreaTime = time[q][3] + "h " + time[q][2] + "min " + time[q][1] + "sec";
 
-            markers[q].bindPopup("<b>" + markers[q].options.title+ "'s Device Location</b><br/>Latitude: " + outerCoord[q][lineLength][0] + "<br/> Longitude: " + outerCoord[q][lineLength][1] + "<br/> Last Visited Area:" + lastAreaNum + "<br/> Last Time Spent in Area: " + lastAreaTime);
+            markers[q].bindPopup("<b>" + markers[q].options.title+ "</b><br/>Latitude: " + outerCoord[q][lineLength][0] + "<br/> Longitude: " + outerCoord[q][lineLength][1] + "<br/> Last Visited Place:" + lastAreaNum + "<br/> Last Time Spent in Area: " + lastAreaTime);
 
             control = isContain(polygons, q);
         
@@ -132,27 +132,45 @@ function getAreaTime(baseValue, timeFractions) { //Clock
     return data;
 }
 
-function drawArea() { //Define Areas
-    var polygonLatlngs = [[[41.0697429223744, 28.808513195580787], //Coordinates for Polygons
-                           [41.0697429223744, 28.80996130994058],
-                           [41.067885138094944, 28.80996130994058],
-                           [41.067885138094944, 28.80787430940058],
-                           [41.06822472099828, 28.807881574194127],
-                           [41.06822472099828, 28.809574271091257],
-                           [41.06871218373997, 28.809574271091257],
-                           [41.06871218373997, 28.808513195580787]],
+function drawArea() { //Define Areas 
+    var polygonLatlngs = //Coordinates for Areas
+    [
+        [[40.98993353591273, 29.0515798330307],
+        [40.98734410611007, 29.051145315170288],
+        [40.9857680521782, 29.049010276794437],
+        [40.98502260067399, 29.0514349937439],
+        [40.984738937509256, 29.053387641906742],
+        [40.98473083418041, 29.05444979667664],
+        [40.985079276421196, 29.05442297458649],
+        [40.9891267438206, 29.055120348930362],
+        [40.98972634749166, 29.054546356201172]],
 
-                          [[41.06749894364841, 28.80433202507794],
-                           [41.067358716772375, 28.80825478362011],
-                           [41.066479104942516, 28.808220966736027],
-                           [41.066612959666045, 28.80428129975705]],
-                            
-                          [[41.07020774886032, 28.80849301188299],
-                           [41.068852289267156, 28.805596395803942],
-                           [41.07220323574246, 28.803598729542536]]],
+        [[40.98452301615978, 29.055077974550798],
+        [40.98355870988021, 29.054863397829607],
+        [40.98331155347965, 29.056129400484636],
+        [40.98250930173115, 29.05579680656679],
+        [40.98208791306527, 29.057867471926286],
+        [40.98403276136791, 29.05876869415529],
+        [40.9843974140397, 29.05679458832033]],
+
+        [[40.98305504607841, 29.0497045216787],
+        [40.981458630313966, 29.04885694362999],
+        [40.98068066751155, 29.051249474071277],
+        [40.98219606574853, 29.052241891406787]],
+                    
+        [[40.98120548183793, 29.055259823799137],
+        [40.980776655924736, 29.05466973781586],
+        [40.98025395777374, 29.053494930267338],
+        [40.97809018647969, 29.052282571792603],
+        [40.97787542628065, 29.053366184234623],
+        [40.97902215660076, 29.06066715717316],
+        [40.98078438575148, 29.056520462036136],
+        [40.98078033384422, 29.05613958835602]]
+    ],
+
     polygons = [];
     for (i = 0; i < polygonLatlngs.length; i++) {
-        var polygon = new L.polygon(polygonLatlngs[i], {color: 'rgb(0, 200, 0)', title: 'Area ' + i, className: 'area-polygon'});
+        var polygon = L.polygon(polygonLatlngs[i], {color: 'rgb(0, 200, 0)', title: 'Area ' + i, className: 'area-polygon'});
         polygons.push(polygon);
         polygons[i].addTo(map);
     }
