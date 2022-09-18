@@ -98,7 +98,7 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
 }
 
 function newLocation(dist, lineLength, q) { //Giving New Location to Marker
-     var latV = (Math.random()) / dist,
+    var latV = (Math.random()) / dist,
         lonV = (Math.random()) / dist,
         direction = Math.floor(Math.random() * 20);
     if (direction > 7) direction = Math.floor(Math.random() * 4); //Reduce the Chance of Going Straight
