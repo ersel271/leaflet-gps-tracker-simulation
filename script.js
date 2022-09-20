@@ -124,6 +124,7 @@ function isContain(polygons, j) { //Control If the Area Contains Marker
 
 function getAreaTime(baseValue, timeFractions) { //Clock
     var data = [baseValue];
+    
     for (i = 0; i < timeFractions.length; i++) {
         data.push(parseInt(data[i] / timeFractions[i]));
         data[i] = data[i] % timeFractions[i];
@@ -135,7 +136,7 @@ function getAreaTime(baseValue, timeFractions) { //Clock
 function drawArea() { //Define Areas 
     var polygonLatlngs = //Coordinates for Areas
     [
-        [[40.98993353591273, 29.0515798330307],
+        [[40.98993353591273, 29.0515798330307], //Area 0
         [40.98734410611007, 29.051145315170288],
         [40.9857680521782, 29.049010276794437],
         [40.98502260067399, 29.0514349937439],
@@ -145,7 +146,7 @@ function drawArea() { //Define Areas
         [40.9891267438206, 29.055120348930362],
         [40.98972634749166, 29.054546356201172]],
 
-        [[40.98452301615978, 29.055077974550798],
+        [[40.98452301615978, 29.055077974550798], //Area 1
         [40.98355870988021, 29.054863397829607],
         [40.98331155347965, 29.056129400484636],
         [40.98250930173115, 29.05579680656679],
@@ -153,12 +154,12 @@ function drawArea() { //Define Areas
         [40.98403276136791, 29.05876869415529],
         [40.9843974140397, 29.05679458832033]],
 
-        [[40.98305504607841, 29.0497045216787],
+        [[40.98305504607841, 29.0497045216787], //Area 2
         [40.981458630313966, 29.04885694362999],
         [40.98068066751155, 29.051249474071277],
         [40.98219606574853, 29.052241891406787]],
                     
-        [[40.98120548183793, 29.055259823799137],
+        [[40.98120548183793, 29.055259823799137], //Area 3
         [40.980776655924736, 29.05466973781586],
         [40.98025395777374, 29.053494930267338],
         [40.97809018647969, 29.052282571792603],
@@ -170,8 +171,7 @@ function drawArea() { //Define Areas
 
     polygons = [];
     for (i = 0; i < polygonLatlngs.length; i++) {
-        var polygon = L.polygon(polygonLatlngs[i], {color: 'rgb(0, 200, 0)', title: 'Area ' + i, className: 'area-polygon'});
-        polygons.push(polygon);
+        polygons.push(L.polygon(polygonLatlngs[i], {color: 'rgb(0, 200, 0)', title: 'Area ' + i, className: 'area-polygon'}));
         polygons[i].addTo(map);
     }
 
