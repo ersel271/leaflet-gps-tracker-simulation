@@ -1,10 +1,14 @@
-var startLocation = [40.98325785367988, 29.052819013595585],
+var startLocation = [40.98381739328393, 29.052041172981266],
+    apiKey = 'YOUR_ARCGIS_API_KEY',
 
     map = L.map('map', {fullscreenControl: true}).setView([startLocation[0], startLocation[1]], 16),
-    osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    osm = L.tileLayer('https://tile.openstreetmap.bzh/br/{z}/{x}/{y}.png', {
+	    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map),
-
+    geocodeService = L.esri.Geocoding.geocodeService({
+        apikey: apiKey
+    }),
+    
     markers = [], //Markers (Users)
     outerPolylines = [], //Polylines for Outside the Polygon
     innerPolylines = [], //Polylines for Inside the Polygon
@@ -23,15 +27,33 @@ var startLocation = [40.98325785367988, 29.052819013595585],
 //    alert(e.latlng.lat + ", " + e.latlng.lng);
 // });
 
-walk(10, 20, 100, 8000, polygons);
+walk(15, 20, 150, 8000, polygons);
 
 function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
+    var redIcon = new L.Icon({ //Icon Settings from https://github.com/pointhi/leaflet-color-markers
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
     for (i = 0; i < n; i++) {
-        markers.push(L.marker([startLocation[0], startLocation[1]], {title: "User " + i}));
-        markers[i].addTo(map);
+        markers.push(L.marker([startLocation[0], startLocation[1]], {
+            icon: redIcon, 
+            title: "User " + i
+        }).addTo(map));
         
-        outerPolylines.push(L.polyline([[0, 0], [0, 0]], {color: 'rgba(255, 0, 0, 0.6)', className: 'outer-polyline'}).addTo(map));
-        innerPolylines.push(L.polyline([[0, 0], [0, 0]], {color: 'rgba(0, 0, 0, 0.6)', className: 'inner-polyline'}).addTo(map));
+        outerPolylines.push(L.polyline([[0, 0], [0, 0]], {
+            color: 'rgba(111, 56, 197, 0.8)',
+            className: 'outer-polyline'
+        }).addTo(map));
+        innerPolylines.push(L.polyline([[0, 0], [0, 0]], {
+            color: 'rgba(0, 0, 0, 0.6)', 
+            className: 'inner-polyline'
+        }).addTo(map));
+
         outerCoord.push([[]]);
         innerCoord.push([[[]]]);
         inx.push([0, 0]);
@@ -57,7 +79,7 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
             if(typeof time[q][0] === "undefined") lastAreaTime = "No Data";
             else lastAreaTime = time[q][3] + "h " + time[q][2] + "min " + time[q][1] + "sec";
 
-            markers[q].bindPopup("<b>" + markers[q].options.title+ "</b><br/>Latitude: " + outerCoord[q][lineLength][0] + "<br/> Longitude: " + outerCoord[q][lineLength][1] + "<br/> Last Visited Place:" + lastAreaNum + "<br/> Last Time Spent in Area: " + lastAreaTime);
+            popup(q, lastAreaNum, lastAreaTime);
 
             control = isContain(polygons, q);
         
@@ -85,7 +107,7 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
                 entDate[q] = new Date();
                 lastArea[q] = isContain(polygons, q);
 
-            } if (control !== -1 && isContain(polygons, q) === -1) { //Going Out from Polygon
+            } else if (control !== -1 && isContain(polygons, q) === -1) { //Going Out from Polygon
                 time[q] = getAreaTime(new Date().getTime() - entDate[q].getTime(), [1000, 60, 60]);
                 lastAreaTime = time[q][3] + "h " + time[q][2] + "min " + time[q][1] + "sec"; 
                 
@@ -95,6 +117,31 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
             }
         }
     }, intervalRate);
+}
+
+function popup(q, lastAreaNum, lastAreaTime) { //Adding Popup to Marker
+    if (apiKey.includes("API_KEY")) { //If API Key is Not Entered, Reverse Geolocation Will Not Work.
+        markers[q].bindPopup(
+            "<b style='font-size: 1.25rem'>" + markers[q].options.title + " - Information</b>" + //Header
+            "<br><b>Latitude: </b>" + markers[q].getLatLng().lat +  //Lat
+            "<br><b>Longitude: </b>" + markers[q].getLatLng().lng + //Lng
+            "<br><b>Last Visited Place: </b>" + lastAreaNum +  //Last Visited Place
+            "<br><b>Last Time Spent in Area: </b>" + lastAreaTime //Time Spent
+        ); 
+    } else { //If API Key is Entered, Reverse Geolocation Will Work.
+        geocodeService.reverse().latlng(markers[q].getLatLng()).run(function (error, result) {
+            if (error) return;
+    
+            markers[q].bindPopup(
+                "<b style='font-size: 1.25rem'>" + markers[q].options.title + " - Information</b>" + //Header
+                "<br><b>Latitude: </b>" + markers[q].getLatLng().lat +  //Lat
+                "<br><b>Longitude: </b>" + markers[q].getLatLng().lng + //Lng
+                "<br><b>Address: </b>" + result.address.LongLabel + //Address
+                "<br><b>Last Visited Place: </b>" + lastAreaNum +  //Last Visited Place
+                "<br><b>Last Time Spent in Area: </b>" + lastAreaTime //Time Spent
+            ); 
+        });
+    }
 }
 
 function newLocation(dist, lineLength, q) { //Giving New Location to Marker
@@ -136,43 +183,52 @@ function getAreaTime(baseValue, timeFractions) { //Clock
 function drawArea() { //Define Areas 
     var polygonLatlngs = //Coordinates for Areas
     [
-        [[40.98993353591273, 29.0515798330307], //Area 0
-        [40.98734410611007, 29.051145315170288],
-        [40.9857680521782, 29.049010276794437],
-        [40.98502260067399, 29.0514349937439],
+        [[40.98993353591273, 29.051579833030700], //Area 0
+        [40.98734410611007, 29.0511453151702880],
+        [40.9857680521782, 29.04901027679443700],
+        [40.98502260067399, 29.0514349937439000],
         [40.984738937509256, 29.053387641906742],
-        [40.98473083418041, 29.05444979667664],
-        [40.985079276421196, 29.05442297458649],
-        [40.9891267438206, 29.055120348930362],
-        [40.98972634749166, 29.054546356201172]],
+        [40.98473083418041, 29.0544497966766400],
+        [40.985079276421196, 29.054422974586490],
+        [40.9891267438206, 29.05512034893036200],
+        [40.98972634749166, 29.0545463562011720]],
 
         [[40.98452301615978, 29.055077974550798], //Area 1
-        [40.98355870988021, 29.054863397829607],
-        [40.98331155347965, 29.056129400484636],
-        [40.98250930173115, 29.05579680656679],
-        [40.98208791306527, 29.057867471926286],
-        [40.98403276136791, 29.05876869415529],
-        [40.9843974140397, 29.05679458832033]],
+        [40.98355870988021, 29.0548633978296070],
+        [40.98331155347965, 29.0561294004846360],
+        [40.98250930173115, 29.0557968065667900],
+        [40.98208791306527, 29.0578674719262860],
+        [40.98403276136791, 29.0587686941552900],
+        [40.9843974140397, 29.05679458832033000]],
 
-        [[40.98305504607841, 29.0497045216787], //Area 2
-        [40.981458630313966, 29.04885694362999],
-        [40.98068066751155, 29.051249474071277],
-        [40.98219606574853, 29.052241891406787]],
+        [[40.98143133792221, 29.048758149147037], //Area 2
+        [40.98060069987966, 29.0512847900390660],
+        [40.9822336027832, 29.05233085155487400],
+        [40.98312482694568, 29.0497559309005770],
+        [40.9842557213152, 29.05056059360504500],
+        [40.98574672779907, 29.0483719110488930],
+        [40.98514708793963, 29.0478193759918250],
+        [40.98289461108739, 29.0464514493942300]],
                     
         [[40.98120548183793, 29.055259823799137], //Area 3
-        [40.980776655924736, 29.05466973781586],
-        [40.98025395777374, 29.053494930267338],
-        [40.97809018647969, 29.052282571792603],
-        [40.97787542628065, 29.053366184234623],
-        [40.97902215660076, 29.06066715717316],
-        [40.98078438575148, 29.056520462036136],
-        [40.98078033384422, 29.05613958835602]]
+        [40.980776655924736, 29.054669737815860],
+        [40.98025395777374, 29.0534949302673380],
+        [40.97809018647969, 29.0522825717926030],
+        [40.97787542628065, 29.0533661842346230],
+        [40.97902215660076, 29.0606671571731600],
+        [40.98078438575148, 29.0565204620361360],
+        [40.98078033384422, 29.0561395883560200]]
     ],
-
     polygons = [];
+
     for (i = 0; i < polygonLatlngs.length; i++) {
-        polygons.push(L.polygon(polygonLatlngs[i], {color: 'rgb(0, 200, 0)', title: 'Area ' + i, className: 'area-polygon'}));
-        polygons[i].addTo(map);
+        polygons.push(L.polygon(polygonLatlngs[i], {
+            color: 'rgb(135, 162, 251)', 
+            title: 'Area ' + i,
+            className: 'area-polygon'
+        }).addTo(map));
+
+        polygons[i].bindPopup("This is " + polygons[i].options.title);
     }
 
     return polygons;
