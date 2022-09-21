@@ -1,5 +1,5 @@
 # leaflet-gps-tracker-simulation
-A simple simulation of what a gps tracker app looks like with [Leaflet.js.](https://github.com/Leaflet/Leaflet "Leaflet.js")
+A simple simulation of what a gps tracker app looks like with [Leaflet.js](https://github.com/Leaflet/Leaflet "Leaflet.js").
 
 ## :star: Variables
 #### Leaflet Object Variables
@@ -8,7 +8,7 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js.](http
 - **`innerPolylines = []`**  &rarr; Holds polylines for outside the polygon as a HTML collection.
 - **`polygons = []`**  &rarr; Holds areas as a HTML collection.
 
-#### Process Variables
+#### Array Variables
 - **`outerCoord = [[]]`**  &rarr; Holds the coordinates to use for **outerPolylines**. It has an index for each user, and these indexes contain arrays in which the coordinates are kept.
 - **`innerCoord = [[[[]]]]`**  &rarr; Holds the coordinates to use for **innerPolylines**. Each index is a separate array and each of these arrays contains the coordinates of its users. When exiting an area, a new array is added to the required index inside the **innerCoord** for the next entry. In the next entry, the coordinates taken inside the area are kept in this array.
 - **`inx = []`**  &rarr; Its used to determine of new arrays to be added to the **innerCoord**.  It has an index for each user. Each index contains a two-element array. **[q][0]** represents polylines. **[q][1]** represents polyline points. **[q][1]** is updated for every move within the area. **[q][1]** is reset and **[q][0]** is incremented by one each time you exit the area.
@@ -32,11 +32,20 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js.](http
 **return:** No.
 
 ------------
+- **`popup(q, lastAreaNum, lastAreaTime)`** &rarr; Adds popups to markers. It takes three parameters:
+
+1. **q**  &rarr; User index.
+2. **lastAreaNum**  &rarr; Last are the user was in.
+3. **lastAreaTime**  &rarr;  Last time spent in area.
+
+**return: No.**
+
+------------
 - **`newLocation(dist, lineLength, q)`** &rarr; Function that selects the direction and new location of the users. It takes three parameters:
 
 1. **dist** &rarr; Same as other.
 2. **lineLength** &rarr; Same as other.
-3. **q** &rarr; User index. 
+3. **q** &rarr; User index.
 
 **return:** No.
 
@@ -52,7 +61,7 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js.](http
 - **`getAreaTime(baseValue, timeFractions)`** &rarr; Function that converts the millisecond difference of the entry and exit dates of the area to other time fractions. It takes two parameters:
 
 1. **baseValue** &rarr; Raw millisecond data.
-2. **timeFractions** &rarr;  Time fractions. For example **[1000, 60, 60]**. **1000**, converts milliseconds to seconds, **60**, converts seconds to minutes, **2nd 60**, converts minutes to hours. If a **24** is added to the end, the hours are converted to days.
+2. **timeFractions** &rarr;  Time fractions. For example **[1000, 60, 60]**. **1000**, converts milliseconds to seconds. **60**, converts seconds to minutes. **2nd 60**, converts minutes to hours. If a **24** is added to the end, the hours are converted to days.
 
 **return:** Yes. Returns the edited duration data. **Index 0** represents milliseconds, **Index 1** represents seconds, **Index 2** represents minutes,  **Index 3** represents hours etc...
 
@@ -65,3 +74,7 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js.](http
 - [**Leaflet.js:**](https://github.com/Leaflet/Leaflet "**Leaflet.js:**") Javascript library for mobile-friendly interactive maps.
 - [**Leaflet.PointInPolygon:**](https://github.com/hayeswise/Leaflet.PointInPolygon "**Leaflet.PointInPolygon**") Leaflet plugin/extension that provides point-in-polygon functions based on Dan Sunday's C++ winding number implementation.
 - [**Leaflet.fullscreen:**](https://github.com/Leaflet/Leaflet.fullscreen "**Leaflet.fullscreen**") A fullscreen control for Leaflet.
+- [**esri-leaflet:**](https://github.com/Esri/esri-leaflet "**esri-leaflet:**") A lightweight set of tools for working with ArcGIS services in Leaflet.
+- [**esri-leaflet-geocoder:**](https://github.com/Esri/esri-leaflet-geocoder "**esri-leaflet-geocoder:**") Helpers for using the ArcGIS World Geocoding Service in Leaflet.
+- [**leaflet-color-markers:**]( https://github.com/pointhi/leaflet-color-markers "**leaflet-color-markers:**") Color variations of the standard Leaflet marker.
+- [**leaflet-providers:**](https://github.com/leaflet-extras/leaflet-providers "**leaflet-providers:**") An extension to Leaflet that contains configurations for various free tile providers.
