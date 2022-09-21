@@ -38,7 +38,7 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js](https
 2. **lastAreaNum**  &rarr; Last are the user was in.
 3. **lastAreaTime**  &rarr;  Last time spent in area.
 
-**return: No.**
+**return:** No.
 
 ------------
 - **`newLocation(dist, lineLength, q)`** &rarr; Function that selects the direction and new location of the users. It takes three parameters:
