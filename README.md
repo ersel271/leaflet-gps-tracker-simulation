@@ -21,7 +21,7 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js](https
 - **`control`**  &rarr; Control variable required to capture the moment of entry and exit into the area.
 
 ## :star: Functions
-- **`walk(n, lineLength, intervalRate, dist, polygons)`** &rarr; Main function with which operations are performed. It takes five parameters:
+- **`walk(n, lineLength, intervalRate, dist, polygons)`** &rarr; Function that does main work like updating arrays, shifting polylines etc... It takes five parameters:
 
 1. **n** &rarr; Number of users.
 2. **lineLength** &rarr; Number of points to use to draw **outerPolylines**.
