@@ -30,7 +30,7 @@ var startLocation = [40.98381739328393, 29.052041172981266],
 walk(15, 20, 150, 8000, polygons);
 
 function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
-    var redIcon = new L.Icon({ //Icon Settings from https://github.com/pointhi/leaflet-color-markers
+    var redIcon = new L.Icon({
         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
         iconSize: [25, 41],
@@ -38,7 +38,7 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
         popupAnchor: [1, -34],
         shadowSize: [41, 41]
     }),
-    violetIcon = new L.Icon({ //Icon Settings from https://github.com/pointhi/leaflet-color-markers
+    violetIcon = new L.Icon({
         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
         iconSize: [25, 41],
