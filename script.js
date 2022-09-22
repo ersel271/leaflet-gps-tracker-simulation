@@ -37,6 +37,14 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],
         shadowSize: [41, 41]
+    }),
+    violetIcon = new L.Icon({ //Icon Settings from https://github.com/pointhi/leaflet-color-markers
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
     });
 
     for (i = 0; i < n; i++) {
@@ -71,16 +79,7 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
 
     setInterval(() => {
         for (q = 0; q < n; q++) {
-            var lastAreaNum = "Area " + lastArea[q],
-                lastAreaTime = "";
-                
-            if(lastAreaNum === "Area -1" ) lastAreaNum = "Nowhere";
-
-            if(typeof time[q][0] === "undefined") lastAreaTime = "No Data";
-            else lastAreaTime = time[q][3] + "h " + time[q][2] + "min " + time[q][1] + "sec";
-
-            popup(q, lastAreaNum, lastAreaTime);
-
+            popup(q);
             control = isContain(polygons, q);
         
             for (i = 0; i < lineLength; i++)
@@ -98,7 +97,7 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
                 outerPolylines[q].setLatLngs(0, 0);
 
             } else { //Temporary Polyline
-                markers[q].setLatLng(outerCoord[q][lineLength]);
+                markers[q].setLatLng(outerCoord[q][lineLength]).setIcon(redIcon);
                 outerPolylines[q].setLatLngs(outerCoord[q]);
 
             }
@@ -106,6 +105,7 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
             if (control === -1 && isContain(polygons, q) !== -1) { //Entering the Polygon
                 entDate[q] = new Date();
                 lastArea[q] = isContain(polygons, q);
+                markers[q].setIcon(violetIcon);
 
             } else if (control !== -1 && isContain(polygons, q) === -1) { //Going Out from Polygon
                 time[q] = getAreaTime(new Date().getTime() - entDate[q].getTime(), [1000, 60, 60]);
@@ -113,24 +113,30 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
                 
                 innerCoord[q].push([[]]);
                 inx[q][0]++; inx[q][1] = 0;
+                markers[q].setIcon(redIcon);
 
             }
         }
     }, intervalRate);
 }
 
-function popup(q, lastAreaNum, lastAreaTime) { //Adding Popup to Marker
-    if (apiKey.includes("API_KEY")) { //If API Key is Not Entered, Reverse Geolocation Will Not Work.
-        markers[q].bindPopup(
-            "<b style='font-size: 1.25rem'>" + markers[q].options.title + " - Information</b>" + //Header
-            "<br><b>Latitude: </b>" + markers[q].getLatLng().lat +  //Lat
-            "<br><b>Longitude: </b>" + markers[q].getLatLng().lng + //Lng
-            "<br><b>Last Visited Place: </b>" + lastAreaNum +  //Last Visited Place
-            "<br><b>Last Time Spent in Area: </b>" + lastAreaTime //Time Spent
-        ); 
-    } else { //If API Key is Entered, Reverse Geolocation Will Work.
+function popup(q) { //Adding Popup to Marker
+    var lastAreaNum = "Area " + lastArea[q],
+    lastAreaTime = "";
+    
+    if(lastAreaNum === "Area -1" ) lastAreaNum = "Nowhere";
+
+    if(typeof time[q][0] === "undefined") lastAreaTime = "No Data";
+    else lastAreaTime = time[q][3] + "h " + time[q][2] + "min " + time[q][1] + "sec";
+   
+    if (apiKey.includes("API_KEY")) noAddress(); //If API Key is Not Entered, Reverse Geolocation Will Not Work.
+    else { //If API Key is Entered, Reverse Geolocation Will Work.
         geocodeService.reverse().latlng(markers[q].getLatLng()).run(function (error, result) {
-            if (error) return;
+            if (error) {
+                noAddress();
+                console.log(error);
+                return; 
+            }
     
             markers[q].bindPopup(
                 "<b style='font-size: 1.25rem'>" + markers[q].options.title + " - Information</b>" + //Header
@@ -141,6 +147,16 @@ function popup(q, lastAreaNum, lastAreaTime) { //Adding Popup to Marker
                 "<br><b>Last Time Spent in Area: </b>" + lastAreaTime //Time Spent
             ); 
         });
+    }
+
+    function noAddress(){
+        markers[q].bindPopup(
+            "<b style='font-size: 1.25rem'>" + markers[q].options.title + " - Information</b>" + //Header
+            "<br><b>Latitude: </b>" + markers[q].getLatLng().lat +  //Lat
+            "<br><b>Longitude: </b>" + markers[q].getLatLng().lng + //Lng
+            "<br><b>Last Visited Place: </b>" + lastAreaNum +  //Last Visited Place
+            "<br><b>Last Time Spent in Area: </b>" + lastAreaTime //Time Spent
+        ); 
     }
 }
 
