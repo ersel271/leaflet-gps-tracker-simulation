@@ -129,8 +129,8 @@ function popup(q) { //Adding Popup to Marker
     if(typeof time[q][0] === "undefined") lastAreaTime = "No Data";
     else lastAreaTime = time[q][3] + "h " + time[q][2] + "min " + time[q][1] + "sec";
    
-    if (apiKey.includes("API_KEY")) noAddress(); //If API Key is Not Entered, Reverse Geolocation Will Not Work.
-    else { //If API Key is Entered, Reverse Geolocation Will Work.
+    if (apiKey.includes("API_KEY")) noAddress(); //If API Key is Not Entered, Reverse Geocoding Will Not Work.
+    else { //If API Key is Entered, Reverse Geocoding Will Work.
         geocodeService.reverse().latlng(markers[q].getLatLng()).run(function (error, result) {
             if (error) {
                 noAddress();
