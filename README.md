@@ -32,7 +32,7 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js](https
 **return:** No.
 
 ------------
-- **`popup(q)`** &rarr; Adds popups to markers. It takes one parameter:
+- **`popup(q)`** &rarr; Function that adds popup to markers. It takes one parameter:
 
 1. **q**  &rarr; User index.
 
