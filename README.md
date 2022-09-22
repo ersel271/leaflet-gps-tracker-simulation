@@ -32,11 +32,9 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js](https
 **return:** No.
 
 ------------
-- **`popup(q, lastAreaNum, lastAreaTime)`** &rarr; Adds popups to markers. It takes three parameters:
+- **`popup(q)`** &rarr; Adds popups to markers. It takes one parameter:
 
 1. **q**  &rarr; User index.
-2. **lastAreaNum**  &rarr; Last are the user was in.
-3. **lastAreaTime**  &rarr;  Last time spent in area.
 
 **return:** No.
 
@@ -66,7 +64,7 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js](https
 **return:** Yes. Returns the edited duration data. **Index 0** represents milliseconds, **Index 1** represents seconds, **Index 2** represents minutes,  **Index 3** represents hours etc...
 
 ------------
-- **`drawArea()`** &rarr; Function that draw areas. Coordinates of the areas are manually entered into the **polygonLatngs** array inside the function. Each index of this array must contain an array containing the coordinates of the area. It takes no parameters.
+- **`drawArea()`** &rarr; Function that draw areas. Coordinates of the areas are manually entered into the **polygonLatngs** array inside the function. Each index of this array must contain an array containing the coordinates of the area. It takes no parameter.
 
 **return:** Yes. Returns an array containing the Leaflet objects of the areas.
 
