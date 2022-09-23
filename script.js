@@ -1,9 +1,17 @@
 var startLocation = [40.98381739328393, 29.052041172981266],
     apiKey = 'YOUR_ARCGIS_API_KEY',
 
-    map = L.map('map', {fullscreenControl: true}).setView([startLocation[0], startLocation[1]], 16),
+    map = L.map('map', {
+        fullscreenControl: true,
+        minZoom: 1
+    }).setView([startLocation[0], startLocation[1]], 16),
     osm = L.tileLayer('https://tile.openstreetmap.bzh/br/{z}/{x}/{y}.png', {
-	    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+	    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        noWrap: true,
+        bounds: [
+            [-90, -180],
+            [90, 180]
+        ]
     }).addTo(map),
     geocodeService = L.esri.Geocoding.geocodeService({
         apikey: apiKey
@@ -22,11 +30,12 @@ var startLocation = [40.98381739328393, 29.052041172981266],
     lastArea = [], //Last Visited Areas
     
     control = false; //Marker - Polygon Contains Controller
-    
+
 // map.on('click', function(e) { 
 //    alert(e.latlng.lat + ", " + e.latlng.lng);
 // });
 
+L.control.scale().addTo(map);
 walk(15, 20, 150, 8000, polygons);
 
 function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
@@ -103,17 +112,19 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
             }
 
             if (control === -1 && isContain(polygons, q) !== -1) { //Entering the Polygon
+                markers[q].setIcon(violetIcon);
+                
                 entDate[q] = new Date();
                 lastArea[q] = isContain(polygons, q);
-                markers[q].setIcon(violetIcon);
 
             } else if (control !== -1 && isContain(polygons, q) === -1) { //Going Out from Polygon
+                markers[q].setIcon(redIcon);
+
                 time[q] = getAreaTime(new Date().getTime() - entDate[q].getTime(), [1000, 60, 60]);
                 lastAreaTime = time[q][3] + "h " + time[q][2] + "min " + time[q][1] + "sec"; 
                 
                 innerCoord[q].push([[]]);
                 inx[q][0]++; inx[q][1] = 0;
-                markers[q].setIcon(redIcon);
 
             }
         }
