@@ -4,7 +4,7 @@ var startLocation = [40.98381739328393, 29.052041172981266],
     map = L.map('map', {
         fullscreenControl: true,
         minZoom: 1
-    }).setView([startLocation[0], startLocation[1]], 16),
+    }).setView(startLocation, 16),
     osm = L.tileLayer('https://tile.openstreetmap.bzh/br/{z}/{x}/{y}.png', {
 	    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         noWrap: true,
@@ -13,6 +13,7 @@ var startLocation = [40.98381739328393, 29.052041172981266],
             [90, 180]
         ]
     }).addTo(map),
+    scale = L.control.scale().addTo(map),
     geocodeService = L.esri.Geocoding.geocodeService({
         apikey: apiKey
     }),
@@ -35,7 +36,7 @@ var startLocation = [40.98381739328393, 29.052041172981266],
 //    alert(e.latlng.lat + ", " + e.latlng.lng);
 // });
 
-L.control.scale().addTo(map);
+
 walk(15, 20, 150, 8000, polygons);
 
 function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
@@ -57,16 +58,16 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
     });
 
     for (i = 0; i < n; i++) {
-        markers.push(L.marker([startLocation[0], startLocation[1]], {
+        markers.push(L.marker(startLocation, {
             icon: redIcon, 
             title: "User " + i
         }).addTo(map));
         
-        outerPolylines.push(L.polyline([[0, 0], [0, 0]], {
+        outerPolylines.push(L.polyline([[-180, -180], [-180, -180]], {
             color: 'rgba(111, 56, 197, 0.8)',
             className: 'outer-polyline'
         }).addTo(map));
-        innerPolylines.push(L.polyline([[0, 0], [0, 0]], {
+        innerPolylines.push(L.polyline([[-180, -180], [-180, -180]], {
             color: 'rgba(0, 0, 0, 0.6)', 
             className: 'inner-polyline'
         }).addTo(map));
@@ -86,6 +87,20 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
             outerCoord[i].push([startLocation[0], startLocation[1]]);
     } 
 
+    var areaLayers = L.layerGroup(), //Layer Control System
+        emptyLayer = L.layerGroup();
+    for (i = 0; i < innerPolylines.length; i++)
+        areaLayers.addLayer(innerPolylines[i]);
+
+    for (i = 0; i < polygons.length; i++)
+        areaLayers.addLayer(polygons[i]);
+    
+    map.addLayer(areaLayers);
+    L.control.layers({
+        "Show Areas": areaLayers,
+        "Hide Areas": emptyLayer
+    }).addTo(map);
+
     setInterval(() => {
         for (q = 0; q < n; q++) {
             popup(q);
@@ -103,7 +118,7 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
 
                 markers[q].setLatLng(innerCoord[q][inx[q][0]][innerCoord[q][inx[q][0]].length - 1]);
                 innerPolylines[q].setLatLngs(innerCoord[q]);
-                outerPolylines[q].setLatLngs(0, 0);
+                outerPolylines[q].setLatLngs(outerCoord[q]);
 
             } else { //Temporary Polyline
                 markers[q].setLatLng(outerCoord[q][lineLength]).setIcon(redIcon);
@@ -173,19 +188,19 @@ function popup(q) { //Adding Popup to Marker
 
 function newLocation(dist, lineLength, q) { //Giving New Location to Marker
     var latV = (Math.random()) / dist,
-        lonV = (Math.random()) / dist,
+        lngV = (Math.random()) / dist,
         direction = Math.floor(Math.random() * 20);
     if (direction > 7) direction = Math.floor(Math.random() * 4); //Reduce the Chance of Going Straight
     
     switch (direction) { //Set Direction
-        case 0: outerCoord[q][lineLength][0] += latV; outerCoord[q][lineLength][1] += lonV; break; //Northeast
-        case 1: outerCoord[q][lineLength][0] -= latV; outerCoord[q][lineLength][1] -= lonV; break; //Southwest
-        case 2: outerCoord[q][lineLength][0] += latV; outerCoord[q][lineLength][1] -= lonV; break; //Northwest
-        case 3: outerCoord[q][lineLength][0] -= latV; outerCoord[q][lineLength][1] += lonV; break; //Southeast
+        case 0: outerCoord[q][lineLength][0] += latV; outerCoord[q][lineLength][1] += lngV; break; //Northeast
+        case 1: outerCoord[q][lineLength][0] -= latV; outerCoord[q][lineLength][1] -= lngV; break; //Southwest
+        case 2: outerCoord[q][lineLength][0] += latV; outerCoord[q][lineLength][1] -= lngV; break; //Northwest
+        case 3: outerCoord[q][lineLength][0] -= latV; outerCoord[q][lineLength][1] += lngV; break; //Southeast
         case 4: outerCoord[q][lineLength][0] += latV; break; //North
         case 5: outerCoord[q][lineLength][0] -= latV; break; //South
-        case 6: outerCoord[q][lineLength][1] += lonV; break; //East
-        case 7: outerCoord[q][lineLength][1] -= lonV; break; //West
+        case 6: outerCoord[q][lineLength][1] += lngV; break; //East
+        case 7: outerCoord[q][lineLength][1] -= lngV; break; //West
     }
 }
 
