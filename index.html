@@ -4,33 +4,169 @@
     <!-- Required Meta Tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ersel420 Gps Track Simulation</title>
+    <title>Kullanıcı Arayüzü</title>
 
-    <!-- Leaflet CSS  -->
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin="" />
     <!-- Leaflet Fullscreen Plugin CSS -->
     <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
     <!-- Esri Leaflet Geocoder CSS -->
     <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css" />
-    
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        #map {
-            width: 100%;
-            height: 100vh;
-        }
-    </style>
+    <!-- Project CSS -->
+    <link rel="stylesheet" href="style.css">
 
   </head>
   <body>
-    <div id="map"></div>
+    <div class="container">
+        <h1 class="text-center mt-2">GPS Track Control Interface</h1>
+        <div class="row">
+            <div id="emp-div" class="section bg-light col-lg m-2 p-3 rounded border border-danger shadow">
+                <h2 class="text-center text-danger">Users</h2>
+                    <div class="btn-group btn-group-sm mb-3">
+                        <input type="button" value="Select" id="e-g-btn" class="disabled btn btn-danger btn-sm rounded">
+                        <input type="text" name = "search" placeholder="Type..." id="emp-input" class="searh-input mx-2 form-control form-control-sm">
+                    </div>
+                <div id="emp-tab-div" class="container-fluid table-responsive">
+                    <table id="emp-tab" class="table table-striped table-hover table-light table-sm text-center">
+                        <thead class="table-danger">
+                            <tr>
+                                <th>User</th>
+                                <th>Location</th>
+                                <th>Last Visited Area</th>
+                                <th>User ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="map-div" class="container section bg-light col-lg m-2 p-3 rounded border border-danger shadow">
+                <h2 class="text-center text-danger">Live Map</h2>
+                <div class="btn-group btn-group-sm">
+                    <input type="button" value="Hide Map" id="hide-btn" class="btn btn-danger">
+                    <div class="btn-group btn-group-sm">
+                        <input type="button" value="Go to Area" id="back-to-a-btn" class="enabled btn btn-danger dropdown-toggle" data-bs-toggle="dropdown">
+                        <div id="back-to-a-div" class="dropdown-menu" style="max-height: 250px; overflow: auto;">
+                            <a href="#" class="back-to-a-item dropdown-item text-danger">Center</a>
+                        </div>
+                        <input type="button" value="Go to User" id="back-to-u-btn" class="enabled btn btn-danger dropdown-toggle" data-bs-toggle="dropdown">
+                        <div id="back-to-u-div" class="dropdown-menu" style="max-height: 250px; overflow: auto;">
+                        </div>
+                    </div>
+                </div>
+                <div id="map-alt" class="border border-danger rounded m-3">
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="tour-div" class="section bg-light col-lg m-2 p-3 rounded border border-danger shadow">
+                <h2 class="text-center text-danger">Tours</h2>
+                <div class="row mb-3">
+                    <div class="col-1">
+                        <label for="dt-in" class="form-check-label">Enter:</label>
+                    </div>
+                    <div class="col-5"> 
+                        <input type="datetime-local" name="enter" id="dt-in" class="col-6 form-control form-control-sm">
+                    </div>
+                    <div class="col-1">
+                        <label for="dt-out" class="form-check-label">Exit:</label>
+                    </div>
+                    <div class="col-5">
+                        <input type="datetime-local" name="exit" id="dt-out" class="col-6 form-control form-control-sm">
+                    </div>
+                </div>
+                <div id="tour-tab-div" class="container-fluid table-responsive h-10">
+                    <table id="tour-tab" class="table table-striped table-hover table-light table-sm text-center">
+                        <thead class="table-danger">
+                            <tr>
+                                <th>User</th>
+                                <th>Date</th>
+                                <th>Duration</th>
+                                <th>Tour ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr> 
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="container mt-2">
+                    <div class="form-check form-switch form-check-inline mb-4">
+                        <input type="checkbox" name="auto-refresh" id="auto-refresh" class="form-check-input">
+                        <label for="c1" class="form-check-label">Auto Refresh</label>
+                    </div>
+                    <input type="button" value="Refresh" id="refresh-btn" class="btn btn-sm btn-danger float-end disabled">
+                </div>
+                <div class="btn-group btn-group-sm">
+                    <input type="button" value="Print/PDF" id="tour-print-btn" class="btn btn-danger">
+                    <input type="button" value="Excel" id="to-excel-btn" class="btn btn-danger">
+                </div>
+            </div>
+            <div id="pat-div" class="section print bg-light col-lg m-2 p-3 rounded border border-danger shadow">
+                <h2 class="text-center text-danger">Patrols</h2>
+                <div id="pat-tab-div" class="container table-responsive">
+                    <table id="pat-tab" class="table table-striped table-hover table-light table-sm text-center">
+                        <thead class="table-danger">
+                            <tr>
+                                <th>User</th>
+                                <th>Status</th>
+                                <th>Start Date</th> 
+                                <th>End Date</th>
+                                <th>Details</th>
+                                <th>Media</th>
+                                <th>Patrol ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="btn-group btn-group-sm mt-4">
+                    <input type="button" value="Print/PDF" id="pat-print-btn" class="btn btn-danger">
+                    <div class="btn-group btn-group-sm">
+                        <input type="button" value="Patrol Filter" id="pat-filter-btn" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown">
+                        <div id="pat-filter-div" class="dropdown-menu">
+                            <a href="#" id="pat-f-i-1"class="pat-f-i dropdown-item text-danger">On Patrol</a>
+                            <a href="#" id="pat-f-i-2" class="pat-f-i dropdown-item text-danger">Finished</a>
+                            <a href="#" id="pat-f-i-3" class="pat-f-i dropdown-item text-danger">Reset</a>
+                        </div>
+                    </div>
+                </div>
+                <span id="p-hm" class="ms-5 mt-4">Number of Users on Patrol: 0</span>
+            </div>
+        </div>
+    </div>
   </body>
 </html>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 <!-- Leaflet -->
 <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
@@ -42,7 +178,10 @@
 <script src="https://unpkg.com/esri-leaflet@3.0.8/dist/esri-leaflet.js" integrity="sha512-E0DKVahIg0p1UHR2Kf9NX7x7TUewJb30mxkxEm2qOYTVJObgsAGpEol9F6iK6oefCbkJiA4/i6fnTHzM6H1kEA==" crossorigin=""></script>
 <!-- Esri Leaflet Geocoder -->
 <script src="https://unpkg.com/esri-leaflet-geocoder"></script>
-<!-- Leaflet Providers -->
-<script src="js/leaflet-providers.js"></script>
+
+<!-- SheetJS - HTML Table to Excel -->
+<script lang="javascript" src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
 <!-- Project JS -->
+<script src="interface.js"></script>
 <script src="script.js"></script>

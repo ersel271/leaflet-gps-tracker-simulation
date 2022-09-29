@@ -28,9 +28,9 @@ var startLocation = [40.98381739328393, 29.052041172981266],
     inx = [], //Represent Indexes from "innerCoord" | [i][0] Index1, Represent Polylines | [i][1] Index2, Represent Polyline Points
     entDate = [], //Last Date Markers Entered an Area
     time = [], //Timers [i][0] Represent Millisecond | [i][1] Represent Second | [i][2] Represent Minute | [i][3] Represent Hour
-    lastArea = [], //Last Visited Areas
     
-    control = false; //Marker - Polygon Contains Controller
+    control = false, //Marker - Polygon Contains Controller
+    tInx = 0; //Repeat Number (Table Index) for Table Updates
 
 // map.on('click', function(e) { 
 //    alert(e.latlng.lat + ", " + e.latlng.lng);
@@ -77,7 +77,6 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
         inx.push([0, 0]);
         time.push(-1);
         entDate.push(-1);
-        lastArea.push(-1);
 
     } outerCoord.shift(); innerCoord.shift();
 
@@ -101,9 +100,15 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
         "Hide Areas": emptyLayer
     }).addTo(map);
 
+    empAdd(n); //Add All Users
+    prepareGta(); //Add Areas "Go to Area" Button's Dropdown
+    prepareGtu(n); //Add Users "Go to User" Button's Dropdown
+
     setInterval(() => {
         for (q = 0; q < n; q++) {
+            empUpdate(true, q); //Update Employee Table - Location
             popup(q);
+
             control = isContain(polygons, q);
         
             for (i = 0; i < lineLength; i++)
@@ -128,16 +133,21 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
 
             if (control === -1 && isContain(polygons, q) !== -1) { //Entering the Polygon
                 markers[q].setIcon(violetIcon);
-                
                 entDate[q] = new Date();
-                lastArea[q] = isContain(polygons, q);
+
+                empUpdate(false, q); //Update Employee Table - Area
+                tourAdd(q); //Add New Data Tour Table
+                patAdd(q); //Add New Data Patrol Table
+                
+                tInx++;
 
             } else if (control !== -1 && isContain(polygons, q) === -1) { //Going Out from Polygon
                 markers[q].setIcon(redIcon);
-
                 time[q] = getAreaTime(new Date().getTime() - entDate[q].getTime(), [1000, 60, 60]);
-                lastAreaTime = time[q][3] + "h " + time[q][2] + "min " + time[q][1] + "sec"; 
                 
+                tourUpdate(q); //Update Tour Table
+                patUpdate(q); //Update Patrol Table
+
                 innerCoord[q].push([[]]);
                 inx[q][0]++; inx[q][1] = 0;
 
@@ -146,15 +156,7 @@ function walk(n, lineLength, intervalRate, dist, polygons) { //Make Move
     }, intervalRate);
 }
 
-function popup(q) { //Adding Popup to Marker
-    var lastAreaNum = "Area " + lastArea[q],
-    lastAreaTime = "";
-    
-    if(lastAreaNum === "Area -1" ) lastAreaNum = "Nowhere";
-
-    if(typeof time[q][0] === "undefined") lastAreaTime = "No Data";
-    else lastAreaTime = time[q][3] + "h " + time[q][2] + "min " + time[q][1] + "sec";
-   
+function popup(q) { //Adding Popup to Marker  
     if (apiKey.includes("API_KEY")) noAddress(); //If API Key is Not Entered, Reverse Geocoding Will Not Work.
     else { //If API Key is Entered, Reverse Geocoding Will Work.
         geocodeService.reverse().latlng(markers[q].getLatLng()).run(function (error, result) {
@@ -169,8 +171,7 @@ function popup(q) { //Adding Popup to Marker
                 "<br><b>Latitude: </b>" + markers[q].getLatLng().lat +  //Lat
                 "<br><b>Longitude: </b>" + markers[q].getLatLng().lng + //Lng
                 "<br><b>Address: </b>" + result.address.LongLabel + //Address
-                "<br><b>Last Visited Place: </b>" + lastAreaNum +  //Last Visited Area
-                "<br><b>Last Time Spent in Area: </b>" + lastAreaTime //Time Spent
+                "<br><b>Last Visited Place: </b>" + tabEmployee.rows[q + 1].cells[2].innerText //Last Visited Area
             ); 
         });
     }
@@ -180,9 +181,8 @@ function popup(q) { //Adding Popup to Marker
             "<b style='font-size: 1.25rem'>" + markers[q].options.title + " - Information</b>" + //Header
             "<br><b>Latitude: </b>" + markers[q].getLatLng().lat +  //Lat
             "<br><b>Longitude: </b>" + markers[q].getLatLng().lng + //Lng
-            "<br><b>Last Visited Place: </b>" + lastAreaNum +  //Last Visited Area
-            "<br><b>Last Time Spent in Area: </b>" + lastAreaTime //Time Spent
-        ); 
+            "<br><b>Last Visited Place: </b>" + tabEmployee.rows[q + 1].cells[2].innerText //Last Visited Area
+        );
     }
 }
 
