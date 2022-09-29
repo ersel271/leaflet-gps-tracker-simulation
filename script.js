@@ -169,7 +169,7 @@ function popup(q) { //Adding Popup to Marker
                 "<br><b>Latitude: </b>" + markers[q].getLatLng().lat +  //Lat
                 "<br><b>Longitude: </b>" + markers[q].getLatLng().lng + //Lng
                 "<br><b>Address: </b>" + result.address.LongLabel + //Address
-                "<br><b>Last Visited Place: </b>" + lastAreaNum +  //Last Visited Place
+                "<br><b>Last Visited Place: </b>" + lastAreaNum +  //Last Visited Area
                 "<br><b>Last Time Spent in Area: </b>" + lastAreaTime //Time Spent
             ); 
         });
@@ -180,7 +180,7 @@ function popup(q) { //Adding Popup to Marker
             "<b style='font-size: 1.25rem'>" + markers[q].options.title + " - Information</b>" + //Header
             "<br><b>Latitude: </b>" + markers[q].getLatLng().lat +  //Lat
             "<br><b>Longitude: </b>" + markers[q].getLatLng().lng + //Lng
-            "<br><b>Last Visited Place: </b>" + lastAreaNum +  //Last Visited Place
+            "<br><b>Last Visited Place: </b>" + lastAreaNum +  //Last Visited Area
             "<br><b>Last Time Spent in Area: </b>" + lastAreaTime //Time Spent
         ); 
     }
