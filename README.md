@@ -1,26 +1,50 @@
 # leaflet-gps-tracker-simulation
 A simple simulation of what a gps tracker app looks like with [Leaflet.js](https://github.com/Leaflet/Leaflet "Leaflet.js").
-
-## :star: Variables
+## :star: Map
+### :star: Variables
 #### Leaflet Object Variables
-- **`markers = []`**  &rarr; Holds user markers as a HTML collection.
-- **`outerPolylines = []`**  &rarr; Holds polylines for outside the polygon as a HTML collection.
-- **`innerPolylines = []`**  &rarr; Holds polylines for outside the polygon as a HTML collection.
-- **`polygons = []`**  &rarr; Holds areas as a HTML collection.
+- **`markers`**  &rarr; Holds user markers as a HTML collection.
+- **`outerPolylines`**  &rarr; Holds polylines for outside the polygon as a HTML collection.
+- **`innerPolylines`**  &rarr; Holds polylines for outside the polygon as a HTML collection.
+- **`polygons`**  &rarr; Holds areas as a HTML collection.
 
 #### Array Variables
-- **`outerCoord = [[]]`**  &rarr; Holds the coordinates to use for **outerPolylines**. It has an index for each user, and these indexes contain arrays in which the coordinates are kept.
-- **`innerCoord = [[[[]]]]`**  &rarr; Holds the coordinates to use for **innerPolylines**. Each index is a separate array and each of these arrays contains the coordinates of its users. When exiting an area, a new array is added to the required index inside the **innerCoord** for the next entry. In the next entry, the coordinates taken inside the area are kept in this array.
-- **`inx = []`**  &rarr; It used to determine of new arrays to be added to the **innerCoord**.  It has an index for each user. Each index contains a two-element array. **[q][0]** represents polylines. **[q][1]** represents polyline points. **[q][1]** is updated for every move within the area. **[q][1]** is reset and **[q][0]** is incremented by one each time you exit the area.
-- **`entDate = []`**  &rarr; Holds the last date entered in the area. It has an index for each user.
-- **`time = []`**  &rarr; Holds the last time spent in the area. It has an index for each user. Each index contains a four-element array. **[q][0]** represents millisecond, **[q][1]** represents second, **[q][2]** epresents minute, **[q][3]** represent hour.
-- **`lastArea = []`** &rarr; Last visited area. It has an index for each user.
+- **`outerCoord`**  &rarr; Holds the coordinates to use for **outerPolylines**. It has an index for each user, and these indexes contain arrays in which the coordinates are kept.
+
+	- **outerCoord[q]: **qth user.
+	- **outerCoord[q][m]: **mth point of the polyline drawn for the qth user.
+	- **outerCoord[q][m][0]**: Latitude of this point.
+	- **outerCoord[q][m][1]:** Longitude of this point.
+
+- **`innerCoord`**  &rarr; Holds the coordinates to use for **innerPolylines**. Each index is a separate array and each of these arrays contains the coordinates of its users. When exiting an area, a new array is added to the required index inside the **innerCoord** for the next entry. In the next entry, the coordinates taken inside the area are kept in this array.
+	- **innerCoord[q]:** qh user.
+	- **innerCoord[q][m]:** Coordinates to be used in the mth entry of the are for qth user.
+	- **innerCoord[q][m][n]:** nth moves coordinate in the mth area for qth user 
+	- **innerCoord[q][m][n][0]:** Latitude of this point.
+	- **innerCoord[q][m][n][1]:** Longitude of this point.
+
+- **`inx`**  &rarr; It used to determine of new arrays to be added to the **innerCoord**.  It has an index for each user. Each index contains a two-element array.
+	- **inx[q]:** qth user.
+	- **inx[q][0]:** Represent different permanent polylines for qth user. Incremented by one each time you exit the area.
+	- **inx[q][1]: **Represent points of these polylines. Incremented by one every move inside of area. Reset every time you exit the area.
+
+- **`entDate`** &rarr; Holds the last date entered in the area. It has an index for each user.
+- **`time`** &rarr; Holds the last time spent in the area. It has an index for each user. Each index contains a four-element array.
+	- **time[q]:** qth user.
+	- **time[q][0]:** Represent milliseconds.
+	- **time[q][1]:** Represent seconds.
+	- **time[q][2]:** Represent minutes.
+	- **time[q][3]:** Represent hours.
+
+- **`lastArea`** &rarr; Last visited area. It has an index for each user.
 
 #### Other Variables
 - **`startLocation`**  &rarr; Variable that holds the starting position.
 - **`control`**  &rarr; Control variable required to capture the moment of entry and exit into the area.
+- **`tInx`** &rarr; Holds the row index that needs to be updated in the tables.
 
-## :star: Functions
+
+### :star: Functions
 - **`walk(n, lineLength, intervalRate, dist, polygons)`** &rarr; Function that does main work like updating arrays, shifting polylines etc... It takes five parameters:
 
 1. **n** &rarr; Number of users.
@@ -29,12 +53,15 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js](https
 4. **dist** &rarr; Distance from which the new location will be selected. Larger the value, smaller the distance between the new location and the old location.
 5. **polygons** &rarr; Defined areas.
 
+**Local Variables:** Nothing.
 **return:** No.
 
 ------------
 - **`popup(q)`** &rarr; Function that adds popup to markers. It takes one parameter:
 
 1. **q**  &rarr; User index.
+
+**Local Variables:** Nothing.
 
 **return:** No.
 
@@ -45,6 +72,8 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js](https
 2. **lineLength** &rarr; Same as other.
 3. **q** &rarr; User index.
 
+**Local Variables:** `latV`, Number to add latitude. `lngV`, Number to add longitude. `direction`, Direction of new location.
+
 **return:** No.
 
 ------------
@@ -52,6 +81,8 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js](https
 
 1. **polygons** &rarr; Defined areas.
 2. **j** &rarr; User index.
+
+**Local Variables:** Nothing.
 
 **return:** Yes. If user is inside an area, it returns the index of that area. Otherwise it returns -1.
 
@@ -61,21 +92,142 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js](https
 1. **baseValue** &rarr; Raw millisecond data.
 2. **timeFractions** &rarr;  Time fractions. For example **[1000, 60, 60]**. **1000**, converts milliseconds to seconds. **60**, converts seconds to minutes. **2nd 60**, converts minutes to hours. If a **24** is added to the end, the hours are converted to days.
 
+**Local Variables:** Nothing.
+
 **return:** Yes. Returns the edited duration data. **Index 0** represents milliseconds, **Index 1** represents seconds, **Index 2** represents minutes,  **Index 3** represents hours etc...
 
 ------------
-- **`drawArea()`** &rarr; Function that draw areas. Coordinates of the areas are manually entered into the **polygonLatngs** array inside the function. Each index of this array must contain an array containing the coordinates of the area. It takes no parameter.
+- **`drawArea()`** &rarr; Function that draw areas.
+
+**Local Variables:** `polygonLatlngs`, Coordinates of the areas are manually entered into the this array. Each index of this array must contain an array containing the coordinates of the area.
+- **polygonLatlngs[m]:** mth area.
+- **polygonLatlngs[m][n]:** nth point of the mth area.
+- **polygonLatlngs[m][n][0]:** Latitude of this point.
+- **polygonLatlngs[m][n][1]:** Longitude of this point.
 
 **return:** Yes. Returns an array containing the Leaflet objects of the areas.
 
-## :star: Try
-Click [here](https://codepen.io/ersel420/pen/eYrEBYN "here") to try this demo.
+## :star: Interface
+### :star: Variables
+#### Constants
+- **`tabEmployee`** &rarr; User table.
+- **`tabTour`** &rarr; Tour table.
+- **`tabPatrol`** &rarr; Patrol table.
+- **`groupBtn`** &rarr; User table - Grouping button.
+- **`empInput`** &rarr;  User table - Search textbox.
+- **`mapDiv`** &rarr; Map - Div who holds the map.
+- **`hideMapBtn`** &rarr; Map - Hide or unhide map button.
+- **`goToUItems`** &rarr; Map - Go to User Button's dropdown items.
+- **`autoRefreshCheck`** &rarr; Tour table - Auto Refresh checkbox.
+- **`toExcelBtn`** &rarr; Tour table - Export to excel button.
+- **`tourPrintBtn`** &rarr; Tour table - Print table button.
+- **`patPrintBtn`** &rarr; Patrol table - Print table button.
+- **`patFilterD`** &rarr; Patrol table - Patrol filter's dropdown items.
+- **`patText`** &rarr; Patrol table - Count of users on patrol (text).
+- **`empCheckBox`** &rarr; User checkboxes.
 
-## :star: References
-- [**Leaflet.js:**](https://github.com/Leaflet/Leaflet "**Leaflet.js:**") Javascript library for mobile-friendly interactive maps.
-- [**Leaflet.PointInPolygon:**](https://github.com/hayeswise/Leaflet.PointInPolygon "**Leaflet.PointInPolygon**") Leaflet plugin/extension that provides point-in-polygon functions based on Dan Sunday's C++ winding number implementation.
-- [**Leaflet.fullscreen:**](https://github.com/Leaflet/Leaflet.fullscreen "**Leaflet.fullscreen**") A fullscreen control for Leaflet.
-- [**esri-leaflet:**](https://github.com/Esri/esri-leaflet "**esri-leaflet:**") A lightweight set of tools for working with ArcGIS services in Leaflet.
-- [**esri-leaflet-geocoder:**](https://github.com/Esri/esri-leaflet-geocoder "**esri-leaflet-geocoder:**") Helpers for using the ArcGIS World Geocoding Service in Leaflet.
-- [**leaflet-color-markers:**]( https://github.com/pointhi/leaflet-color-markers "**leaflet-color-markers:**") Color variations of the standard Leaflet marker.
-- [**leaflet-providers:**](https://github.com/leaflet-extras/leaflet-providers "**leaflet-providers:**") An extension to Leaflet that contains configurations for various free tile providers.
+#### Variables
+- **`empArry`** &rarr; Data of user table.
+- **`tourArry`** &rarr; Data of tour table.
+- **`patArry`** &rarr; Data of patrol table.
+- **`filters`** &rarr; Array who holds filters.
+- **`passInx`** &rarr; Keeps filter indexes that should not be affected by grouping deletions.
+- **`hideMapControl`** &rarr; Active/Passive control for hide map button.
+- empGroupControl: Active/Passive control for grouping button.
+- **`patrolCount`** &rarr; Count of users on patrol (number).
+
+### :star: Functions
+- **`filterStarter(value)`** &rarr; Function that returns the filters array to empty and ready state.
+	- **filters[m]: **Filters of mth table.
+	- **filters[m][n]:** nth filter of mth table.
+	- **filters[m][n][0]:** Column number to apply the filter to.
+	- **filters[m][n][1]:** Filter value.
+
+It takes one parameter:
+1. **value** &rarr; Table count.
+
+**Local Variables:** Nothing.
+**return:** No.
+
+------------
+
+- **`getDt()`** &rarr; Function that gets dates for tables. Format: DD/MM/YY - HH/MM/SS. It takes no parameter.
+
+**Local Variables:** Nothing.
+
+**return:** Yes. Returns the date object in the desired format.
+
+------------
+
+- **`btnStatus(condition, btnID)`** &rarr; Function that sets the buttons to active or inactive state. It takes two parameters:
+1. **condition** &rarr; Buttons are activated or deactivated depending on the condition.
+2. **btnID** &rarr; Button ID.
+
+**Local Variables:** Nothing.
+
+**return:** No.
+
+------------
+
+- **`showHide(tableID, startRow, endRow, value)`** &rarr; Function that hides or shows the desired range of rows of the table. It takes four parameters:
+1. **tableID** &rarr; Table ID.
+2. **startRow** &rarr; Row to start processing.
+3. **endRow** &rarr; Row to end processing.
+4. **value** &rarr; What action will be taken, **"none"**: hide, **""**: show.
+
+**Local Variables:** Nothing.
+
+**return:** No.
+
+------------
+
+- **`search(tableID, inputID, searchColumn)`** &rarr; Function that searches the table with a textbox and returns results. It takes three parameters:
+1. **tableID** &rarr; Table ID.
+2. **inputID** &rarr; Textbox ID.
+3. **searchColumn** &rarr; Column number to search.
+
+**Local Variables:** filter, textbox value, tr, "tr" elements of table. td, "td" elements of tr. textValue, td.innerText.
+
+**return:** No.
+
+------------
+
+- **`printSec(secID)`** &rarr; Function that print tables. It takes one parameters:
+1. **secID** &rarr; ID of the table to be printed.
+
+**Local Variables:** Nothing.
+
+**return:** No.
+
+------------
+
+- **`filterControl(tableID, startRow, endRow)`** &rarr;  Function that checks filters for rows in the specified range. Used after every operation done on tables. It takes three parameters:
+1. **tableID** &rarr; Table ID.
+2. **startRow** &rarr; Row to start processing.
+3. **endRow** &rarr; Row to end processing.
+
+**Local Variables:** `tNo`, number equivalent of the table in the filters array. `iCount`, number of columns to apply filter. `tfArry`, array that checks if the row fits the filters. `tCount`, array holding the true amount in tfArry.
+
+**return:** Yes. Returns the line numbers to which the filter was applied if the filter is not empty, or -1 otherwise.
+
+------------
+
+- **`groupDisable()`** &rarr; Disables the grouping button if no checkbox marked. It takes no parameter.
+
+**Local Variables:** `empCheckBoxes`, user checkboxes. `checkControl`, information whether the checkbox is checked or not.
+
+**return:** No.
+
+------------
+
+- **`empGroup()`** &rarr; Function that groups users, hides or shows selected users from the map. It takes no parameters.
+
+**Local Variables:** `checkBox`, user checkboxes. `markerImgs`, user marker images. `markerShadows`, user markers shadows. `outerPolys`, polylines for outside the polygon.
+`innerPolys`, polylines for inside the polygon. `dropdown`, dropdown items for back to user button. `checkArry`, checked checkbox indexes. `userArry`, selected user titles.
+
+**return:** No.
+
+------------
+
+- **`empAdd(n)`** &rarr;
+
