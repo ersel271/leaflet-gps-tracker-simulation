@@ -1,5 +1,11 @@
 # leaflet-gps-tracker-simulation
 A simple simulation of what a gps tracker app looks like with [Leaflet.js](https://github.com/Leaflet/Leaflet "Leaflet.js").
+
+## :star: Try
+You can try **Map Only** in [here.](https://codepen.io/ersel420/pen/eYrEBYN "here.")
+
+You can try **Map & Control Interface** in [here.](https://codepen.io/ersel420/pen/eYrMVmV "here.")
+
 ## :star: Map
 ### :star: Variables
 #### Leaflet Object Variables
@@ -11,8 +17,8 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js](https
 #### Array Variables
 - **`outerCoord`**  &rarr; Holds the coordinates to use for **outerPolylines**. It has an index for each user, and these indexes contain arrays in which the coordinates are kept.
 
-	- **outerCoord[q]: **qth user.
-	- **outerCoord[q][m]: **mth point of the polyline drawn for the qth user.
+	- **outerCoord[q]:** qth user.
+	- **outerCoord[q][m]:** mth point of the polyline drawn for the qth user.
 	- **outerCoord[q][m][0]**: Latitude of this point.
 	- **outerCoord[q][m][1]:** Longitude of this point.
 
@@ -23,10 +29,10 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js](https
 	- **innerCoord[q][m][n][0]:** Latitude of this point.
 	- **innerCoord[q][m][n][1]:** Longitude of this point.
 
-- **`inx`**  &rarr; It used to determine of new arrays to be added to the **innerCoord**.  It has an index for each user. Each index contains a two-element array.
+- **`inx`** &rarr; It used to determine of new arrays to be added to the **innerCoord**.  It has an index for each user. Each index contains a two-element array.
 	- **inx[q]:** qth user.
 	- **inx[q][0]:** Represent different permanent polylines for qth user. Incremented by one each time you exit the area.
-	- **inx[q][1]: **Represent points of these polylines. Incremented by one every move inside of area. Reset every time you exit the area.
+	- **inx[q][1]:** Represent points of these polylines. Incremented by one every move inside of area. Reset every time you exit the area.
 
 - **`entDate`** &rarr; Holds the last date entered in the area. It has an index for each user.
 - **`time`** &rarr; Holds the last time spent in the area. It has an index for each user. Each index contains a four-element array.
@@ -131,103 +137,28 @@ A simple simulation of what a gps tracker app looks like with [Leaflet.js](https
 - **`tourArry`** &rarr; Data of tour table.
 - **`patArry`** &rarr; Data of patrol table.
 - **`filters`** &rarr; Array who holds filters.
-- **`passInx`** &rarr; Keeps filter indexes that should not be affected by grouping deletions.
-- **`hideMapControl`** &rarr; Active/Passive control for hide map button.
-- empGroupControl: Active/Passive control for grouping button.
-- **`patrolCount`** &rarr; Count of users on patrol (number).
-
-### :star: Functions
-- **`filterStarter(value)`** &rarr; Function that returns the filters array to empty and ready state.
-	- **filters[m]: **Filters of mth table.
+	- **filters[m]:** Filters of mth table.
 	- **filters[m][n]:** nth filter of mth table.
 	- **filters[m][n][0]:** Column number to apply the filter to.
 	- **filters[m][n][1]:** Filter value.
-
-It takes one parameter:
-1. **value** &rarr; Table count.
-
-**Local Variables:** Nothing.
-**return:** No.
-
-------------
-
-- **`getDt()`** &rarr; Function that gets dates for tables. Format: DD/MM/YY - HH/MM/SS. It takes no parameter.
-
-**Local Variables:** Nothing.
-
-**return:** Yes. Returns the date object in the desired format.
+- **`passInx`** &rarr; Holds filter indexes that should not be affected by grouping deletions.
+	-  **passInx[m][0]:** Holds in which table the filter that will not be deleted is in.
+	- **passInx[m][1]:** Holds the index of the filter that will not be deleted.
+	- For example, if **passInx[m] = [2, 3]** then filter 3 of table 2 is not affected by deletion.
+- **`hideMapControl`** &rarr; Active/Passive control for hide map button.
+- **`empGroupControl`** &rarr; Active/Passive control for grouping button.
+- **`patrolCount`** &rarr; Count of users on patrol (number).
 
 ------------
 
-- **`btnStatus(condition, btnID)`** &rarr; Function that sets the buttons to active or inactive state. It takes two parameters:
-1. **condition** &rarr; Buttons are activated or deactivated depending on the condition.
-2. **btnID** &rarr; Button ID.
 
-**Local Variables:** Nothing.
-
-**return:** No.
+#### :star: There is no more explanation for interface because of this repo is not originally about interface. :star:
 
 ------------
 
-- **`showHide(tableID, startRow, endRow, value)`** &rarr; Function that hides or shows the desired range of rows of the table. It takes four parameters:
-1. **tableID** &rarr; Table ID.
-2. **startRow** &rarr; Row to start processing.
-3. **endRow** &rarr; Row to end processing.
-4. **value** &rarr; What action will be taken, **"none"**: hide, **""**: show.
-
-**Local Variables:** Nothing.
-
-**return:** No.
-
-------------
-
-- **`search(tableID, inputID, searchColumn)`** &rarr; Function that searches the table with a textbox and returns results. It takes three parameters:
-1. **tableID** &rarr; Table ID.
-2. **inputID** &rarr; Textbox ID.
-3. **searchColumn** &rarr; Column number to search.
-
-**Local Variables:** filter, textbox value, tr, "tr" elements of table. td, "td" elements of tr. textValue, td.innerText.
-
-**return:** No.
-
-------------
-
-- **`printSec(secID)`** &rarr; Function that print tables. It takes one parameters:
-1. **secID** &rarr; ID of the table to be printed.
-
-**Local Variables:** Nothing.
-
-**return:** No.
-
-------------
-
-- **`filterControl(tableID, startRow, endRow)`** &rarr;  Function that checks filters for rows in the specified range. Used after every operation done on tables. It takes three parameters:
-1. **tableID** &rarr; Table ID.
-2. **startRow** &rarr; Row to start processing.
-3. **endRow** &rarr; Row to end processing.
-
-**Local Variables:** `tNo`, number equivalent of the table in the filters array. `iCount`, number of columns to apply filter. `tfArry`, array that checks if the row fits the filters. `tCount`, array holding the true amount in tfArry.
-
-**return:** Yes. Returns the line numbers to which the filter was applied if the filter is not empty, or -1 otherwise.
-
-------------
-
-- **`groupDisable()`** &rarr; Disables the grouping button if no checkbox marked. It takes no parameter.
-
-**Local Variables:** `empCheckBoxes`, user checkboxes. `checkControl`, information whether the checkbox is checked or not.
-
-**return:** No.
-
-------------
-
-- **`empGroup()`** &rarr; Function that groups users, hides or shows selected users from the map. It takes no parameters.
-
-**Local Variables:** `checkBox`, user checkboxes. `markerImgs`, user marker images. `markerShadows`, user markers shadows. `outerPolys`, polylines for outside the polygon.
-`innerPolys`, polylines for inside the polygon. `dropdown`, dropdown items for back to user button. `checkArry`, checked checkbox indexes. `userArry`, selected user titles.
-
-**return:** No.
-
-------------
-
-- **`empAdd(n)`** &rarr;
-
+## :star: References
+- [**Leaflet.js:**](https://github.com/Leaflet/Leaflet "**Leaflet.js:**") Javascript library for mobile-friendly interactive maps.
+- [**Leaflet.PointInPolygon:**](https://github.com/hayeswise/Leaflet.PointInPolygon "**Leaflet.PointInPolygon**") Leaflet plugin/extension that provides point-in-polygon functions based on Dan Sunday's C++ winding number implementation.
+- [**Leaflet.fullscreen:**](https://github.com/Leaflet/Leaflet.fullscreen "**Leaflet.fullscreen**") A fullscreen control for Leaflet.
+- [**esri-leaflet:**](https://github.com/Esri/esri-leaflet "**esri-leaflet:**") A lightweight set of tools for working with ArcGIS services in Leaflet.
+- [**leaflet-color-markers:**]( https://github.com/pointhi/leaflet-color-markers "**leaflet-color-markers:**") Color variations of the standard Leaflet marker.
