@@ -387,7 +387,7 @@ function tourUpdate(j) { //Tour Table - Update Data
     for (i = 0; i < tourArry.length; i++)
         if (tourArry[i][0] === (markers[j].options.title)) x = i;
 
-    tourArry[x][2] = time[j][3] + " s " + time[j][2] + " m " + time[j][1] + " h ";
+    tourArry[x][2] = time[j][3] + " h " + time[j][2] + " m " + time[j][1] + " s ";
     tabTour.rows[x + 2].cells[2].innerHTML = tourArry[x][2];
 }
 
