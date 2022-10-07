@@ -2,19 +2,16 @@
 A simple simulation of what a gps tracker app looks like with [Leaflet.js](https://github.com/Leaflet/Leaflet "Leaflet.js").
 
 ## :star: Try
-You can try **Map Only** in [here.](https://codepen.io/ersel420/pen/eYrEBYN "here.")
+You can try this repo in [here.](https://codepen.io/ersel420/pen/eYrEBYN "here.")
 
-You can try **Map & Control Interface** in [here.](https://codepen.io/ersel420/pen/eYrMVmV "here.")
-
-## :star: Map
-### :star: Variables
-#### Leaflet Object Variables
+## :star: Variables
+### Leaflet Object Variables
 - **`markers`**  &rarr; Holds user markers as a HTML collection.
 - **`outerPolylines`**  &rarr; Holds polylines for outside the polygon as a HTML collection.
 - **`innerPolylines`**  &rarr; Holds polylines for outside the polygon as a HTML collection.
 - **`polygons`**  &rarr; Holds areas as a HTML collection.
 
-#### Array Variables
+### Array Variables
 - **`outerCoord`**  &rarr; Holds the coordinates to use for **outerPolylines**. It has an index for each user, and these indexes contain arrays in which the coordinates are kept.
 
 	- **outerCoord[q]:** qth user.
@@ -44,13 +41,13 @@ You can try **Map & Control Interface** in [here.](https://codepen.io/ersel420/p
 
 - **`lastArea`** &rarr; Last visited area. It has an index for each user.
 
-#### Other Variables
+### Other Variables
 - **`startLocation`**  &rarr; Variable that holds the starting position.
 - **`control`**  &rarr; Control variable required to capture the moment of entry and exit into the area.
 - **`tInx`** &rarr; Holds the row index that needs to be updated in the tables.
 
 
-### :star: Functions
+## :star: Functions
 - **`walk(n, lineLength, intervalRate, dist, polygons)`** &rarr; Function that does main work like updating arrays, shifting polylines etc... It takes five parameters:
 
 1. **n** &rarr; Number of users.
@@ -113,49 +110,6 @@ You can try **Map & Control Interface** in [here.](https://codepen.io/ersel420/p
 - **polygonLatlngs[m][n][1]:** Longitude of this point.
 
 **return:** Yes. Returns an array containing the Leaflet objects of the areas.
-
-## :star: Interface
-### :star: Variables
-#### Constants
-- **`tabEmployee`** &rarr; User table.
-- **`tabTour`** &rarr; Tour table.
-- **`tabPatrol`** &rarr; Patrol table.
-- **`groupBtn`** &rarr; User table - Grouping button.
-- **`empInput`** &rarr;  User table - Search textbox.
-- **`mapDiv`** &rarr; Map - Div who holds the map.
-- **`hideMapBtn`** &rarr; Map - Hide or unhide map button.
-- **`goToUItems`** &rarr; Map - Go to User Button's dropdown items.
-- **`autoRefreshCheck`** &rarr; Tour table - Auto Refresh checkbox.
-- **`toExcelBtn`** &rarr; Tour table - Export to excel button.
-- **`tourPrintBtn`** &rarr; Tour table - Print table button.
-- **`patPrintBtn`** &rarr; Patrol table - Print table button.
-- **`patFilterD`** &rarr; Patrol table - Patrol filter's dropdown items.
-- **`patText`** &rarr; Patrol table - Count of users on patrol (text).
-- **`empCheckBox`** &rarr; User checkboxes.
-
-#### Variables
-- **`empArry`** &rarr; Data of user table.
-- **`tourArry`** &rarr; Data of tour table.
-- **`patArry`** &rarr; Data of patrol table.
-- **`filters`** &rarr; Array who holds filters.
-	- **filters[m]:** Filters of mth table.
-	- **filters[m][n]:** nth filter of mth table.
-	- **filters[m][n][0]:** Column number to apply the filter to.
-	- **filters[m][n][1]:** Filter value.
-- **`passInx`** &rarr; Holds filter indexes that should not be affected by grouping deletions.
-	-  **passInx[m][0]:** Holds in which table the filter that will not be deleted is in.
-	- **passInx[m][1]:** Holds the index of the filter that will not be deleted.
-	- For example, if **passInx[m] = [2, 3]** then filter 3 of table 2 is not affected by deletion.
-- **`hideMapControl`** &rarr; Active/Passive control for hide map button.
-- **`empGroupControl`** &rarr; Active/Passive control for grouping button.
-- **`patrolCount`** &rarr; Count of users on patrol (number).
-
-------------
-
-
-#### :star: There is no more explanation for interface because of this repo is not originally about interface. :star:
-
-------------
 
 ## :star: References
 - [**Leaflet.js:**](https://github.com/Leaflet/Leaflet "**Leaflet.js:**") Javascript library for mobile-friendly interactive maps.
