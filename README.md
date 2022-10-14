@@ -20,7 +20,7 @@ You can try this repo in [here.](https://codepen.io/ersel420/pen/eYrEBYN "here."
 	- **outerCoord[q][m][1]:** Longitude of this point.
 
 - **`innerCoord`**  &rarr; Holds the coordinates to use for **innerPolylines**. Each index is a separate array and each of these arrays contains the coordinates of its users. When exiting an area, a new array is added to the required index inside the **innerCoord** for the next entry. In the next entry, the coordinates taken inside the area are kept in this array.
-	- **innerCoord[q]:** qh user.
+	- **innerCoord[q]:** qth user.
 	- **innerCoord[q][m]:** Coordinates to be used in the mth entry of the are for qth user.
 	- **innerCoord[q][m][n]:** nth moves coordinate in the mth area for qth user 
 	- **innerCoord[q][m][n][0]:** Latitude of this point.
